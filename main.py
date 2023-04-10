@@ -1,5 +1,9 @@
+from recognizer import Recognizer
+
+
 def main():
-    pass
+    a = Recognizer("test").get_data_type()
+    print(a)
 
 
 if __name__ == "__main__":
