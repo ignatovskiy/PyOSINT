@@ -1,33 +1,43 @@
 import re
 
 
+EMAIL_REGEXP = r"^[A-Za-z0-9\._%\+\-]+@([A-Za-z0-9\-]+\.)+[A-Z|a-z]{2,}$"
+PHONE_REGEXP = r"^[\+\(]?[1-9][0-9 .\-\(\)]{0,}[0-9\(\)]$"
+IP_REGEXP = r"^((\b(\d{1,3}\.){3}(\d{1,3})\b)|([A-Fa-f0-9]{1,4}:{1,2}){1,7}([A-Fa-f0-9]{1,4}))$"
+HOST_REGEXP = r"^(https?:\/\/)?(([A-Za-zА-Яа-я0-9\-])+\.)+([A-Za-zА-Яа-я0-9]+)$"
+NAME_REGEXP = r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$"
+NICK_REGEXP = r"^[\w!@\$%#&\-\?<>~]+$"
+ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-/№()&\'\"]+$"
+COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
+
+
 class Recognizer:
     def __init__(self, input_data):
         self.input_data = input_data
 
     def is_email(self):
-        return bool(re.search(r"^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b$", self.input_data))
+        return bool(re.search(EMAIL_REGEXP, self.input_data))
 
     def is_phone(self):
-        return bool(re.search(r"^[\+\(]?[1-9][0-9 .\-\(\)]{0,}[0-9\(\)]$", self.input_data))
+        return bool(re.search(PHONE_REGEXP, self.input_data))
 
     def is_ip(self):
-        return bool(re.search(r"^(\b(\d{1,3}\.){3}(\d{1,3})\b)|([A-Fa-f0-9]{4}:){7}([A-Fa-f0-9]{4})$", self.input_data))
+        return bool(re.search(IP_REGEXP, self.input_data))
 
     def is_hostname(self):
-        return bool(re.search(r"^(https?:\/\/)?(([A-Za-zА-Яа-я0-9\-])+\.)+([A-Za-zА-Яа-я0-9]+)$", self.input_data))
+        return bool(re.search(HOST_REGEXP, self.input_data))
 
     def is_name(self):
-        return bool(re.search(r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$", self.input_data))
+        return bool(re.search(NAME_REGEXP, self.input_data))
 
     def is_nickname(self):
-        return bool(re.search(r"^[\w!@\$%#&\-\?<>~]+$", self.input_data))
+        return bool(re.search(NICK_REGEXP, self.input_data))
 
     def is_address(self):
-        return bool(re.search(r"^[а-яА-ЯёЁa-zA-Z0-9\s\.,\-/#№()&\'\"]+$", self.input_data))
+        return bool(re.search(ADDRESS_REGEXP, self.input_data))
 
     def is_company_name(self):
-        return bool(re.search(r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.,\-\'\"/]+$", self.input_data))
+        return bool(re.search(COMPANY_REGEXP, self.input_data))
 
     def get_data_type(self):
         return {
