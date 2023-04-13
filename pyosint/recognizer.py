@@ -12,34 +12,34 @@ COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
 
 
 class Recognizer:
-    def __init__(self, input_data):
-        self.input_data = input_data
+    def __init__(self, input_data: str):
+        self.input_data: str = input_data
 
-    def is_email(self):
+    def is_email(self) -> bool:
         return bool(re.search(EMAIL_REGEXP, self.input_data))
 
-    def is_phone(self):
+    def is_phone(self) -> bool:
         return bool(re.search(PHONE_REGEXP, self.input_data))
 
-    def is_ip(self):
+    def is_ip(self) -> bool:
         return bool(re.search(IP_REGEXP, self.input_data))
 
-    def is_hostname(self):
+    def is_hostname(self) -> bool:
         return bool(re.search(HOST_REGEXP, self.input_data))
 
     def is_name(self):
         return bool(re.search(NAME_REGEXP, self.input_data))
 
-    def is_nickname(self):
+    def is_nickname(self) -> bool:
         return bool(re.search(NICK_REGEXP, self.input_data))
 
-    def is_address(self):
+    def is_address(self) -> bool:
         return bool(re.search(ADDRESS_REGEXP, self.input_data))
 
-    def is_company_name(self):
+    def is_company_name(self) -> bool:
         return bool(re.search(COMPANY_REGEXP, self.input_data))
 
-    def get_data_type(self):
+    def get_data_type(self) -> dict:
         return {
             "email": self.is_email(),
             "phone": self.is_phone(),
