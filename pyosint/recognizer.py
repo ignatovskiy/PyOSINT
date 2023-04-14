@@ -1,3 +1,4 @@
+import ipaddress
 import re
 
 
@@ -9,6 +10,15 @@ NAME_REGEXP = r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$"
 NICK_REGEXP = r"^[\w!@\$%#&\-\?<>~]+$"
 ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-/№()&\'\"]+$"
 COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
+
+EXCLUDE_TYPES = ["ip", "email"]
+
+
+def exclude_types(types_list):
+    for type_ in types_list:
+        if type_ in EXCLUDE_TYPES:
+            return [type_]
+    return types_list
 
 
 class Recognizer:
@@ -34,12 +44,19 @@ class Recognizer:
         return bool(re.search(NICK_REGEXP, self.input_data))
 
     def is_address(self) -> bool:
-        return bool(re.search(ADDRESS_REGEXP, self.input_data))
+        if bool(re.search(ADDRESS_REGEXP, self.input_data)):
+            try:
+                ipaddress.ip_address(self.input_data)
+                return True
+            except ValueError:
+                return False
+        else:
+            return False
 
     def is_company_name(self) -> bool:
         return bool(re.search(COMPANY_REGEXP, self.input_data))
 
-    def get_data_type(self) -> dict:
+    def get_data_types_dict(self) -> dict:
         return {
             "email": self.is_email(),
             "phone": self.is_phone(),
@@ -50,3 +67,6 @@ class Recognizer:
             "address": self.is_address(),
             "company": self.is_company_name()
         }
+
+    def get_data_types_list(self) -> list:
+        return exclude_types([key for key, value in self.get_data_types_dict().items() if value])

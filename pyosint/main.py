@@ -1,11 +1,10 @@
 from recognizer import Recognizer
-from validator import Validator
+from converter import Converter
 
 
 def main():
-    a = Recognizer("1.2.3.4").get_data_type()
-    print(a)
-    b = Validator(input_data='1.2.3.4', types_dict=a).validate_types()
+    a = Recognizer("1.1.1.1").get_data_types_list()
+    b = Converter('+7(800)000-00-00', 'phone').get_converted_data()
     print(b)
 
 
