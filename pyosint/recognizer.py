@@ -32,7 +32,14 @@ class Recognizer:
         return bool(re.search(PHONE_REGEXP, self.input_data))
 
     def is_ip(self) -> bool:
-        return bool(re.search(IP_REGEXP, self.input_data))
+        if bool(re.search(IP_REGEXP, self.input_data)):
+            try:
+                ipaddress.ip_address(self.input_data)
+                return True
+            except ValueError:
+                return False
+        else:
+            return False
 
     def is_hostname(self) -> bool:
         return bool(re.search(HOST_REGEXP, self.input_data))
