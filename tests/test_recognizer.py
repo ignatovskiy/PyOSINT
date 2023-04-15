@@ -1,4 +1,4 @@
-from pyosint.recognizer import Recognizer
+from pyosint.core.recognizer import Recognizer
 
 
 # Phone tests

@@ -1,4 +1,4 @@
-from pyosint.converter import Converter
+from pyosint.core.converter import Converter
 
 
 def test_convert_phone():
