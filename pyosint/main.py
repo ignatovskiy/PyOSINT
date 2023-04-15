@@ -4,8 +4,7 @@ from parser import Parser
 
 
 def main():
-    a = Parser("https://google.com", "get").get_all_attrs_values("a", "href")
-    print(a)
+    pass
 
 
 if __name__ == "__main__":
