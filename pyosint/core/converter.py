@@ -10,7 +10,8 @@ class Converter:
             "name": self.convert_name(),
             "nickname": self.convert_nickname(),
             "address": self.convert_address(),
-            "company": self.convert_company_name()
+            "company": self.convert_company_name(),
+            "id": self.convert_id()
         }
 
     def convert_email(self):
@@ -44,6 +45,13 @@ class Converter:
 
     def convert_company_name(self):
         return self.input_data
+
+    def convert_id(self):
+        id_: str = self.input_data
+        id_symbols = ['-', ' ']
+        for symbol in id_symbols:
+            id_ = id_.replace(symbol, '')
+        return id_
 
     def get_converted_data(self):
         return self.conversion_dict[self.type]
