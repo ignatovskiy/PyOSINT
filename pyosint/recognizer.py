@@ -8,7 +8,7 @@ IP_REGEXP = r"^((\b(\d{1,3}\.){3}(\d{1,3})\b)|([A-Fa-f0-9]{1,4}:{1,2}){1,7}([A-F
 HOST_REGEXP = r"^(https?:\/\/)?(([A-Za-zА-Яа-я0-9\-])+\.)+([A-Za-zА-Яа-я0-9]+)$"
 NAME_REGEXP = r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$"
 NICK_REGEXP = r"^[\w!@\$%#&\-\?<>~]+$"
-ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-/№()&\'\"]+$"
+ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-\/№\(\)&\'\"]+$"
 COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
 
 EXCLUDE_TYPES = ["ip", "email"]
@@ -44,14 +44,7 @@ class Recognizer:
         return bool(re.search(NICK_REGEXP, self.input_data))
 
     def is_address(self) -> bool:
-        if bool(re.search(ADDRESS_REGEXP, self.input_data)):
-            try:
-                ipaddress.ip_address(self.input_data)
-                return True
-            except ValueError:
-                return False
-        else:
-            return False
+        return bool(re.search(ADDRESS_REGEXP, self.input_data))
 
     def is_company_name(self) -> bool:
         return bool(re.search(COMPANY_REGEXP, self.input_data))

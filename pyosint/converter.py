@@ -30,7 +30,7 @@ class Converter:
         hostname: str = self.input_data
         hostname_symbols = ['https://', 'http://']
         for symbol in hostname_symbols:
-            hostname.replace(symbol, '')
+            hostname = hostname.replace(symbol, '')
         return hostname
 
     def convert_name(self):
