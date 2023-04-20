@@ -1,7 +1,6 @@
 from pyosint.core.parser import Parser
 from pyosint.core.recognizer import Recognizer
 
-
 URL = "https://www.list-org.com"
 
 NAME = 'name'
@@ -71,7 +70,8 @@ def get_company_info(url):
                         rows_list.append({tds[0]: tds[1:]})
                     else:
                         rows_list.append(tds[0])
-            info_dict[h6].append(rows_list)
+            if rows_list:
+                info_dict[h6].append(rows_list)
 
         ps = card.find_all('p')
         ps_dict = dict()
@@ -84,6 +84,12 @@ def get_company_info(url):
                     ps_dict[data_key] = data_value
         if ps_dict:
             info_dict[h6].append(ps_dict)
+        if len(info_dict[h6]) == 1:
+            if isinstance(info_dict[h6][0], dict):
+                info_dict[h6] = info_dict[h6][0]
+            elif isinstance(info_dict[h6][0], list) \
+                    and len(info_dict[h6][0]) == 1 and isinstance(info_dict[h6][0][0], dict):
+                info_dict[h6] = info_dict[h6][0][0]
     return info_dict
 
 
