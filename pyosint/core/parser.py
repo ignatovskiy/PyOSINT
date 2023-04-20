@@ -2,6 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
+ua = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Safari/605.1.15"}
+
+
 class Parser:
     def __init__(self, url: str, request_type: str, data: dict = None):
         self.url: str = url
@@ -13,7 +16,7 @@ class Parser:
         }
 
     def get_request(self):
-        return requests.get(self.url, data=self.data)
+        return requests.get(self.url, data=self.data, headers=ua)
 
     def post_request(self):
         return requests.post(self.url, data=self.data)

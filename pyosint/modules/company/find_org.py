@@ -2,14 +2,7 @@ from pyosint.core.parser import Parser
 from pyosint.core.recognizer import Recognizer
 
 
-import re
-
-
 URL = "http://www.find-org.com"
-
-LOCATION_NAME_PATTERN = r'\(([^,]+)'
-OGRN_PATTERN = r',\s*ОГРН:\s*([^\s,]+)'
-INN_PATERN = r',\s*ИНН:\s*([^\s,)]+)([,)]\s*.*|$)'
 
 NAME = 'name'
 INN = 'inn'
