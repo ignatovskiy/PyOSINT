@@ -20,79 +20,6 @@ DATA_TYPES = {
 }
 
 
-def get_search_url(data_type, input_data):
-    return f"{URL}/search?type={data_type}&val={input_data}"
-
-
-def get_search_urls(data_type, input_data):
-    urls_list = []
-    for type_ in DATA_TYPES[data_type]:
-        urls_list.append(get_search_url(type_, input_data))
-    return urls_list
-
-
-def get_paragraphs(url):
-    return Parser(url, 'get').get_all_elements('p')
-
-
-def get_card(url):
-    return Parser(url, 'get').get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-2'})
-
-
-def get_company_info(url):
-    info_dict = dict()
-    cards = get_card(url)
-    for card in cards:
-        h6 = card.h6.text
-        info_dict[h6] = list()
-        if card.table:
-            rows_list = []
-            table = card.table
-            trs = table.find_all('tr')
-            first_row_index = 0
-
-            first_row = trs[0]
-            first_row_tds = first_row.find_all("td", {"class": "tth"})
-            if first_row_tds:
-                headers = []
-                for td in first_row_tds:
-                    headers.append(td.text)
-                first_row_index = 1
-
-            for tr in trs[first_row_index:]:
-                tds = [td.text for td in tr.find_all("td")]
-                if first_row_index == 1:
-                    rows_list.append(dict(zip(headers, tds)))
-                elif first_row_index == 0:
-                    if len(tds) == 2:
-                        rows_list.append({tds[0]: tds[1]})
-                    elif len(tds) > 2:
-                        rows_list.append({tds[0]: tds[1:]})
-                    else:
-                        rows_list.append(tds[0])
-            if rows_list:
-                info_dict[h6].append(rows_list)
-
-        ps = card.find_all('p')
-        ps_dict = dict()
-        for p in ps:
-            if p.i:
-                data_key = p.i.text.strip()
-                data_value = p.text.replace(p.i.text, '').strip()
-
-                if data_value:
-                    ps_dict[data_key] = data_value
-        if ps_dict:
-            info_dict[h6].append(ps_dict)
-        if len(info_dict[h6]) == 1:
-            if isinstance(info_dict[h6][0], dict):
-                info_dict[h6] = info_dict[h6][0]
-            elif isinstance(info_dict[h6][0], list) \
-                    and len(info_dict[h6][0]) == 1 and isinstance(info_dict[h6][0][0], dict):
-                info_dict[h6] = info_dict[h6][0][0]
-    return info_dict
-
-
 class ListOrg:
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
@@ -104,9 +31,9 @@ class ListOrg:
     def get_lists_of_orgs(self):
         lists_of_orgs = []
         for data_type in self.data_type:
-            urls = get_search_urls(data_type, self.input_data)
+            urls = self.get_search_urls(data_type, self.input_data)
             for url in urls:
-                lists_of_orgs.extend(get_paragraphs(url))
+                lists_of_orgs.extend(self.get_parsed_object(url).get_all_elements('p'))
         return set(lists_of_orgs)
 
     def get_search_results(self):
@@ -141,13 +68,109 @@ class ListOrg:
         complex_data = []
 
         for result in search_results:
-            complex_data.append(get_company_info(result['url']))
+            complex_data.append(self.get_company_info(result['url']))
 
         return complex_data
 
+    @staticmethod
+    def get_search_url(data_type, input_data):
+        return f"{URL}/search?type={data_type}&val={input_data}"
+
+    def get_search_urls(self, data_type, input_data):
+        urls_list = []
+        for type_ in DATA_TYPES[data_type]:
+            urls_list.append(self.get_search_url(type_, input_data))
+        return urls_list
+
+    @staticmethod
+    def get_parsed_object(url):
+        return Parser(url, 'get')
+
+    @staticmethod
+    def get_cells_data(first_row_index, headers, tds):
+        if first_row_index >= 1:
+            if len(headers) == len(tds):
+                return dict(zip(headers, tds))
+            else:
+                return None
+        elif first_row_index == 0:
+            if len(tds) == 2:
+                return {tds[0]: tds[1]}
+            elif len(tds) > 2:
+                return {tds[0]: tds[1:]}
+            else:
+                return tds[0]
+
+    @staticmethod
+    def flatten_card_data(card_data):
+        if len(card_data) == 1:
+            if isinstance(card_data[0], dict):
+                return card_data[0]
+            elif isinstance(card_data[0], list) and isinstance(card_data[0][0], dict):
+                if len(card_data[0]) == 1:
+                    return card_data[0][0]
+                else:
+                    return card_data[0]
+        return card_data
+
+    @staticmethod
+    def get_text_from_ps(ps):
+        ps_dict = dict()
+        for p in ps:
+            if p.i:
+                data_key = p.i.text.strip()
+                data_value = p.text.replace(p.i.text, '').strip()
+
+                if data_value:
+                    ps_dict[data_key] = data_value
+        return ps_dict
+
+    def get_company_info(self, url):
+        info_dict = dict()
+
+        parsed = self.get_parsed_object(url)
+
+        cards = parsed.get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-2'})
+        for card in cards:
+            h6 = parsed.get_element_text(parsed.get_all_elements('h6', parent_element=card)[0])
+            info_dict[h6] = list()
+            if card.table:
+                rows_list = []
+                headers = []
+
+                table = parsed.get_all_elements('table', parent_element=card)[0]
+                trs = parsed.get_all_elements('tr', parent_element=table)
+
+                first_row_index = 0
+
+                for tr in trs:
+                    first_row_index += 1
+                    tth_elements = parsed.get_all_elements("td", {"class": "tth"}, parent_element=tr)
+                    if tth_elements:
+                        headers = parsed.get_element_text(tth_elements)
+                        break
+
+                for tr in trs[first_row_index:]:
+                    tds_list = parsed.get_all_elements('td', parent_element=tr)
+                    tds_text_list = parsed.get_element_text(tds_list)
+                    row_list_element = self.get_cells_data(first_row_index, headers, tds_text_list)
+                    if row_list_element:
+                        rows_list.append(row_list_element)
+                if rows_list:
+                    info_dict[h6].append(rows_list)
+
+            ps = parsed.get_all_elements('p', parent_element=card)
+            ps_dict = self.get_text_from_ps(ps)
+            if ps_dict:
+                info_dict[h6].append(ps_dict)
+
+            card_data = info_dict[h6]
+            info_dict[h6] = self.flatten_card_data(card_data)
+        return info_dict
+
 
 def main():
-    a = get_company_info("https://www.list-org.com/company/5308358")
+    a = ListOrg('yandex').get_company_info("https://www.list-org.com/company/5308358")
     print(a)
 
 
