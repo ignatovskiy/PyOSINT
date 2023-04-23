@@ -37,9 +37,12 @@ class Parser:
             self.soup = BeautifulSoup(self.get_content(), features="html.parser")
         return self.soup
 
-    def get_all_elements(self, element: str, attributes: dict = None, parent_element=None) -> list:
+    def get_all_elements(self, element: str, attributes: dict = None, parent_element=None) -> list|None:
         parent_element = parent_element if parent_element else self.get_soup()
-        return parent_element.find_all(element, attributes)
+        try:
+            return parent_element.find_all(element, attributes)
+        except AttributeError:
+            return None
 
     def get_all_attrs_values(
             self, attr_key: str, attributes: dict = None, elements_list: list = None, html_element: str = None

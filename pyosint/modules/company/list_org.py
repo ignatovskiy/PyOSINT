@@ -130,9 +130,20 @@ class ListOrg:
 
         parsed = self.get_parsed_object(url)
 
+        brief_card = parsed.get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-1'})
+        if brief_card:
+            brief_ps = parsed.get_all_elements('tr', parent_element=brief_card[1])
+            brief_dict = self.get_text_from_ps(brief_ps)
+            info_dict.update(brief_dict)
+
         cards = parsed.get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-2'})
+
         for card in cards:
-            h6 = parsed.get_element_text(parsed.get_all_elements('h6', parent_element=card)[0])
+            h6_element = parsed.get_all_elements('h6', parent_element=card)
+            if h6_element:
+                h6 = parsed.get_element_text(h6_element[0])
+            else:
+                continue
             info_dict[h6] = list()
             if card.table:
                 rows_list = []
