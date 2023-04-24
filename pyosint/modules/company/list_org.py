@@ -161,6 +161,9 @@ class ListOrg:
                         headers = parsed.get_element_text(tth_elements)
                         break
 
+                if not headers:
+                    first_row_index = 0
+
                 for tr in trs[first_row_index:]:
                     tds_list = parsed.get_all_elements('td', parent_element=tr)
                     tds_text_list = parsed.get_element_text(tds_list)
@@ -181,7 +184,7 @@ class ListOrg:
 
 
 def main():
-    a = ListOrg('yandex').get_company_info("https://www.list-org.com/company/5308358")
+    a = ListOrg('yandex').get_company_info("https://www.list-org.com/company/8047119")
     print(a)
 
 
