@@ -21,34 +21,6 @@ DATA_TYPES = {
 }
 
 
-def get_search_url(data_type, input_data):
-    return f"{URL}/search/{data_type}/?val={input_data}"
-
-
-def get_search_urls(data_type, input_data):
-    urls_list = []
-    for type_ in DATA_TYPES[data_type]:
-        urls_list.append(get_search_url(type_, input_data))
-    return urls_list
-
-
-def get_paragraphs(url):
-    return Parser(url, 'get').get_all_elements('p')
-
-
-def get_company_info(url):
-    info_dict = dict()
-    data_list = get_paragraphs(url)
-    for el in data_list:
-        if el.i:
-            data_key = el.i.text.strip()
-            data_value = el.text.replace(el.i.text, '').strip()
-
-            if data_value:
-                info_dict[data_key] = data_value
-    return info_dict
-
-
 class FindOrg:
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
@@ -96,13 +68,48 @@ class FindOrg:
         complex_data = []
 
         for result in search_results:
-            complex_data.append(get_company_info(result['url']))
+            complex_data.append(self.get_company_info(result['url']))
 
         return complex_data
 
+    @staticmethod
+    def get_parsed_object(url):
+        return Parser(url, 'get')
+
+    @staticmethod
+    def get_search_url(data_type, input_data):
+        return f"{URL}/search/{data_type}/?val={input_data}"
+
+    def get_search_urls(self, data_type, input_data):
+        urls_list = []
+        for type_ in DATA_TYPES[data_type]:
+            urls_list.append(self.get_search_url(type_, input_data))
+        return urls_list
+
+    @staticmethod
+    def get_text_from_ps(ps):
+        ps_dict = dict()
+        for p in ps:
+            if p.i:
+                data_key = p.i.text.strip()
+                data_value = p.text.replace(p.i.text, '').strip()
+
+                if data_value:
+                    if data_value.startswith(': '):
+                        data_value = data_value[2:]
+                    ps_dict[data_key] = data_value
+        return ps_dict
+
+    def get_company_info(self, url):
+        parsed = self.get_parsed_object(url)
+        data_list = parsed.get_all_elements('p')
+        info_dict = self.get_text_from_ps(data_list)
+        return info_dict
+
 
 def main():
-    pass
+    a = FindOrg('yandex').get_company_info("http://www.find-org.com/cli/7947327_gbuz_rk_simferopolskaja_crkb")
+    print(a)
 
 
 if __name__ == "__main__":

@@ -53,9 +53,9 @@ class Parser:
     @staticmethod
     def get_element_text(element):
         if isinstance(element, list):
-            return [el.text for el in element]
+            return [el.get_text(strip=True, separator=' ') for el in element]
         else:
-            return element.text
+            return element.get_text(strip=True, separator=' ')
 
     @staticmethod
     def get_attribute(parent_object, children_object):
