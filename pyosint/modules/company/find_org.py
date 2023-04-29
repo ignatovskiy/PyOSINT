@@ -32,9 +32,9 @@ class FindOrg:
     def get_lists_of_orgs(self):
         lists_of_orgs = []
         for data_type in self.data_type:
-            urls = get_search_urls(data_type, self.input_data)
+            urls = self.get_search_urls(data_type, self.input_data)
             for url in urls:
-                lists_of_orgs.extend(get_paragraphs(url))
+                lists_of_orgs.extend(self.get_parsed_object(url).get_all_elements('p'))
         return set(lists_of_orgs)
 
     def get_search_results(self):
