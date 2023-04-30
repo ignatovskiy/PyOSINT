@@ -1,7 +1,7 @@
 import bs4
 import requests
 
-from pyosint.parser import Parser
+from pyosint.core.parser import Parser
 
 
 def test_get_request():

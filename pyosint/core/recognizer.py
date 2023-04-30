@@ -10,6 +10,8 @@ NAME_REGEXP = r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$"
 NICK_REGEXP = r"^[\w!@\$%#&\-\?<>~]+$"
 ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-\/№\(\)&\'\"]+$"
 COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
+ID_REGEXP = r"^[0-9 \-]+$"
+
 
 EXCLUDE_TYPES = ["ip", "email"]
 
@@ -56,6 +58,9 @@ class Recognizer:
     def is_company_name(self) -> bool:
         return bool(re.search(COMPANY_REGEXP, self.input_data))
 
+    def is_id(self) -> bool:
+        return bool(re.search(ID_REGEXP, self.input_data))
+
     def get_data_types_dict(self) -> dict:
         return {
             "email": self.is_email(),
@@ -65,7 +70,8 @@ class Recognizer:
             "name": self.is_name(),
             "nickname": self.is_nickname(),
             "address": self.is_address(),
-            "company": self.is_company_name()
+            "company": self.is_company_name(),
+            "id": self.is_id()
         }
 
     def get_data_types_list(self) -> list:

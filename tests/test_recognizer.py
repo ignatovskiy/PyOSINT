@@ -1,4 +1,4 @@
-from pyosint.recognizer import Recognizer
+from pyosint.core.recognizer import Recognizer
 
 
 # Phone tests
@@ -169,3 +169,15 @@ def test_company_en_symbol():
 
 def test_nick():
     assert Recognizer("t3$t").is_nickname() is True
+
+
+def test_id():
+    assert Recognizer("1000 2000").is_id() is True
+
+
+def test_id_lines():
+    assert Recognizer("10-00 50-20").is_id() is True
+
+
+def test_id_invalid():
+    assert Recognizer("1000.2000").is_id() is False
