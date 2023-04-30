@@ -1,4 +1,5 @@
 from pyosint.core.parser import Parser
+from pyosint.core.utils import *
 
 
 URL = "https://www.tinkoff.ru/api/common/dadata/suggestions/api/4_1/rs/suggest/party?appName=company-pages"
@@ -15,21 +16,12 @@ class Tinkoff:
         orgs_dict = self.get_parsed_object(url).get_request().json()
         return orgs_dict
 
-    def remove_null_dict_values(self, org):
-        for key, value in list(org.items()):
-            if isinstance(value, dict):
-                self.remove_null_dict_values(value)
-                if not value:
-                    del org[key]
-            elif value is None:
-                del org[key]
-        return org
-
-    def format_org_dict(self, org: dict):
+    @staticmethod
+    def format_org_dict(org: dict):
         org.pop('unrestricted_value')
         org['data']['address'].pop('data')
         org['url'] = f"{COMPANY_URL}/{org['data']['ogrn']}/"
-        return self.remove_null_dict_values(org)
+        return remove_null_dict_values(org)
 
     def get_search_results(self):
         results = []
@@ -64,8 +56,8 @@ class Tinkoff:
             divs_list = parsed.get_all_elements('div', {'class': 'anc1Re'})
             if divs_list:
                 for div in divs_list:
-                    temp_title = " ".join(parsed.get_element_text(parsed.get_all_elements('h2', parent_element=div)))
-                    temp_text = " ".join(parsed.get_element_text(parsed.get_all_elements('p', parent_element=div)))
+                    temp_title = " ".join(get_element_text(parsed.get_all_elements('h2', parent_element=div)))
+                    temp_text = " ".join(get_element_text(parsed.get_all_elements('p', parent_element=div)))
                     if not info_dict.get(temp_title):
                         info_dict[temp_title] = [temp_text]
                     else:
@@ -76,7 +68,7 @@ class Tinkoff:
 
 
 def main():
-    a = Tinkoff('Рг-Групп').get_company_info('https://www.tinkoff.ru/business/contractor/legal/1107847232063/')
+    a = Tinkoff('Рг-Групп').get_company_info('https://www.tinkoff.ru/business/contractor/legal/1022402295410/')
     print(a)
 
 

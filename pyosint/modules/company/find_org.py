@@ -1,5 +1,6 @@
 from pyosint.core.parser import Parser
 from pyosint.core.recognizer import Recognizer
+from pyosint.core.utils import *
 
 
 URL = "http://www.find-org.com"
@@ -86,24 +87,10 @@ class FindOrg:
             urls_list.append(self.get_search_url(type_, input_data))
         return urls_list
 
-    @staticmethod
-    def get_text_from_ps(ps):
-        ps_dict = dict()
-        for p in ps:
-            if p.i:
-                data_key = p.i.text.strip()
-                data_value = p.text.replace(p.i.text, '').strip()
-
-                if data_value:
-                    if data_value.startswith(': '):
-                        data_value = data_value[2:]
-                    ps_dict[data_key] = data_value
-        return ps_dict
-
     def get_company_info(self, url):
         parsed = self.get_parsed_object(url)
         data_list = parsed.get_all_elements('p')
-        info_dict = self.get_text_from_ps(data_list)
+        info_dict = get_text_from_ps(data_list, clean_value=True)
         return info_dict
 
 

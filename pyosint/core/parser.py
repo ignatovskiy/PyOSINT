@@ -37,10 +37,10 @@ class Parser:
             self.soup = BeautifulSoup(self.get_content(), features="html.parser")
         return self.soup
 
-    def get_all_elements(self, element: str, attributes: dict = None, parent_element=None) -> list|None:
+    def get_all_elements(self, element: str, attributes: dict = None, parent_element=None, recursive=True) -> list|None:
         parent_element = parent_element if parent_element else self.get_soup()
         try:
-            return parent_element.find_all(element, attributes)
+            return parent_element.find_all(element, attributes, recursive=recursive)
         except AttributeError:
             return None
 
@@ -49,13 +49,6 @@ class Parser:
     ) -> list:
         elements_list = elements_list if elements_list else self.get_all_elements(html_element, attributes)
         return [self.get_attribute(el, attr_key) for el in elements_list]
-
-    @staticmethod
-    def get_element_text(element):
-        if isinstance(element, list):
-            return [el.get_text(strip=True, separator=' ').replace("\xa0", ' ') for el in element]
-        else:
-            return element.get_text(strip=True, separator=' ').replace("\xa0", ' ')
 
     @staticmethod
     def get_attribute(parent_object, children_object):
