@@ -107,8 +107,7 @@ class Companium:
 
 
 def main():
-    a = Companium('Яндекс').get_search_results()
-    print(a)
+    pass
 
 
 if __name__ == "__main__":

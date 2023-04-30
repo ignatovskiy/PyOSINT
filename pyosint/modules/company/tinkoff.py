@@ -68,8 +68,7 @@ class Tinkoff:
 
 
 def main():
-    a = Tinkoff('Рг-Групп').get_company_info('https://www.tinkoff.ru/business/contractor/legal/1022402295410/')
-    print(a)
+    pass
 
 
 if __name__ == "__main__":

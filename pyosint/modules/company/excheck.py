@@ -85,8 +85,7 @@ class Excheck:
 
 
 def main():
-    a = Excheck('5177746277385').get_company_info("https://excheck.pro/company/7736207543")
-    print(a)
+    pass
 
 
 if __name__ == "__main__":

@@ -95,8 +95,7 @@ class FindOrg:
 
 
 def main():
-    a = FindOrg('yandex').get_company_info("http://www.find-org.com/cli/7947327_gbuz_rk_simferopolskaja_crkb")
-    print(a)
+    pass
 
 
 if __name__ == "__main__":

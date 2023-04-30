@@ -142,8 +142,7 @@ class ListOrg:
 
 
 def main():
-    a = ListOrg('yandex').get_company_info("https://www.list-org.com/company/8047119")
-    print(a)
+    pass
 
 
 if __name__ == "__main__":
