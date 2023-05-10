@@ -12,7 +12,7 @@ class Excheck:
 
     def get_lists_of_orgs(self):
         url = self.get_search_url(self.input_data)
-        orgs_dict = self.get_parsed_object(url).get_request().json()
+        orgs_dict = make_request('get', url).json()
         return orgs_dict
 
     def get_search_results(self):
@@ -21,7 +21,7 @@ class Excheck:
             temp_dict = org
             temp_dict['info'] = get_soup_from_raw(temp_dict['content'])
             temp_dict.pop('content')
-            temp_dict['url'] = f"{URL}/{get_all_elements_from_parent(temp_dict['info'], 'a')[0].get('href')[9:]}"
+            temp_dict['url'] = f"{URL}{temp_dict['ogrn']}"
             temp_dict['info'] = get_element_text(temp_dict['info'], sep_text=True)
             results.append(temp_dict)
         return results
@@ -37,7 +37,7 @@ class Excheck:
 
     @staticmethod
     def get_parsed_object(url):
-        return Parser(url, 'get')
+        return get_soup_from_raw(get_request_content(make_request('get', url)))
 
     @staticmethod
     def get_search_url(input_data):
@@ -46,8 +46,8 @@ class Excheck:
     def get_brief_info(self, url):
         parsed = self.get_parsed_object(url)
         brief_info_dict = dict()
-        brief_info_div = parsed.get_all_elements('section', {'class': 'info-columns'})[0]
-        brief_info_subdivs = parsed.get_all_elements('div', parent_element=brief_info_div, recursive=False)
+        brief_info_div = get_all_elements_from_parent(parsed, 'section', attributes={'class': 'info-columns'})[0]
+        brief_info_subdivs = get_all_elements_from_parent(brief_info_div, 'div', recursive=False)
         for brief_info_subdiv in brief_info_subdivs:
             temp_text_list = [el for el in get_element_text(brief_info_subdiv).split('\n') if el]
             temp_title = temp_text_list[0]

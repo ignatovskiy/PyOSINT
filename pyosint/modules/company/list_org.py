@@ -34,7 +34,7 @@ class ListOrg:
         for data_type in self.data_type:
             urls = self.get_search_urls(data_type, self.input_data)
             for url in urls:
-                lists_of_orgs.extend(self.get_parsed_object(url).get_all_elements('p'))
+                lists_of_orgs.extend(get_all_elements_from_parent(self.get_parsed_object(url), 'p'))
         return set(lists_of_orgs)
 
     def get_search_results(self):
@@ -85,23 +85,23 @@ class ListOrg:
 
     @staticmethod
     def get_parsed_object(url):
-        return Parser(url, 'get')
+        return get_soup_from_raw(get_request_content(make_request('get', url)))
 
     def get_company_info(self, url):
         info_dict = dict()
 
         parsed = self.get_parsed_object(url)
 
-        brief_card = parsed.get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-1'})
+        brief_card = get_all_elements_from_parent(parsed, 'div', attributes={'class': 'card w-100 p-1 p-lg-3 mt-1'})
         if brief_card:
-            brief_ps = parsed.get_all_elements('tr', parent_element=brief_card[1])
+            brief_ps = get_all_elements_from_parent(brief_card[1], 'tr')
             brief_dict = get_text_from_ps(brief_ps, clean_key=True)
             info_dict.update(brief_dict)
 
-        cards = parsed.get_all_elements('div', {'class': 'card w-100 p-1 p-lg-3 mt-2'})
+        cards = get_all_elements_from_parent(parsed, 'div', attributes={'class': 'card w-100 p-1 p-lg-3 mt-2'})
 
         for card in cards:
-            h6_element = parsed.get_all_elements('h6', parent_element=card)
+            h6_element = get_all_elements_from_parent(card, 'h6')
             if h6_element:
                 h6 = get_element_text(h6_element[0])
             else:
@@ -111,14 +111,14 @@ class ListOrg:
             if card.table:
                 headers = []
 
-                table = parsed.get_all_elements('table', parent_element=card)[0]
-                trs = parsed.get_all_elements('tr', parent_element=table)
+                table = get_all_elements_from_parent(card, 'table')[0]
+                trs = get_all_elements_from_parent(table, 'tr')
 
                 first_row_index = 0
 
                 for tr in trs:
                     first_row_index += 1
-                    tth_elements = parsed.get_all_elements("td", {"class": "tth"}, parent_element=tr)
+                    tth_elements = get_all_elements_from_parent(tr, 'td', attributes={"class": "tth"})
                     if tth_elements:
                         headers = get_element_text(tth_elements)
                         break
@@ -131,7 +131,7 @@ class ListOrg:
                 if rows_list:
                     info_dict[h6].append(rows_list)
 
-            ps = parsed.get_all_elements('p', parent_element=card)
+            ps = get_all_elements_from_parent(card, 'p')
             ps_dict = get_text_from_ps(ps, clean_key=True, clean_value=True)
             if ps_dict:
                 info_dict[h6].append(ps_dict)

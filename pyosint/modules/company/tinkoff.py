@@ -13,7 +13,7 @@ class Tinkoff:
 
     def get_lists_of_orgs(self):
         url = self.get_search_url(self.input_data)
-        orgs_dict = self.get_parsed_object(url).get_request().json()
+        orgs_dict = make_request('get', url).json()
         return orgs_dict
 
     @staticmethod
@@ -40,7 +40,7 @@ class Tinkoff:
 
     @staticmethod
     def get_parsed_object(url):
-        return Parser(url, 'get')
+        return get_soup_from_raw(get_request_content(make_request('get', url)))
 
     @staticmethod
     def get_search_url(input_data):
@@ -53,11 +53,11 @@ class Tinkoff:
             counter += 1
             temp_url = f"{url}/history/{counter}/"
             parsed = self.get_parsed_object(temp_url)
-            divs_list = parsed.get_all_elements('div', {'class': 'anc1Re'})
+            divs_list = get_all_elements_from_parent(parsed, 'div', attributes={'class': 'anc1Re'})
             if divs_list:
                 for div in divs_list:
-                    temp_title = " ".join(get_element_text(parsed.get_all_elements('h2', parent_element=div)))
-                    temp_text = " ".join(get_element_text(parsed.get_all_elements('p', parent_element=div)))
+                    temp_title = " ".join(get_element_text(get_all_elements_from_parent(div, 'h2')))
+                    temp_text = " ".join(get_element_text(get_all_elements_from_parent(div, 'p')))
                     if not info_dict.get(temp_title):
                         info_dict[temp_title] = [temp_text]
                     else:

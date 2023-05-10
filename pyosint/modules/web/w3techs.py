@@ -13,7 +13,7 @@ class W3techs:
 
     @staticmethod
     def get_parsed_object(url):
-        return Parser(url, 'get')
+        return get_soup_from_raw(get_request_content(make_request('get', url)))
 
     @staticmethod
     def get_search_url(input_data):
@@ -22,9 +22,9 @@ class W3techs:
     def get_site_info(self):
         url = self.get_search_url(self.input_data)
         parsed = self.get_parsed_object(url)
-        table = parsed.get_all_elements('td', {'class': 'tech_main'})[0]
-        ps = parsed.get_all_elements('p', {'class': [re.compile(r'\bsi_h\b'), re.compile(r'\bsi_tech\b')]},
-                                     parent_element=table)
+        table = get_all_elements_from_parent(parsed, 'td', attributes={'class': 'tech_main'})[0]
+        ps = get_all_elements_from_parent(table, 'p',
+                                          attributes={'class': [re.compile(r'\bsi_h\b'), re.compile(r'\bsi_tech\b')]})
         ps_text = [el for el in ps if el.a.text]
         techs_dict = dict()
         temp_key = None
@@ -37,13 +37,13 @@ class W3techs:
         for key in techs_dict:
             if len(techs_dict[key]) == 1:
                 techs_dict[key] = techs_dict[key][0]
-        techs_dict.pop('No title declaration')
+        if techs_dict.get('No title declaration'):
+            techs_dict.pop('No title declaration')
         return techs_dict
 
 
 def main():
-    test = W3techs("microsoft.com").get_site_info()
-    print(test)
+    pass
 
 
 if __name__ == "__main__":

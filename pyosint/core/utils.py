@@ -1,4 +1,8 @@
 from bs4 import BeautifulSoup as soup
+import requests
+
+
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Safari/605.1.15"
 
 
 def clean_attr(attr, attr_type):
@@ -56,13 +60,13 @@ def get_cells_data(first_row_index, headers, tds):
 
 def get_table_dict(parsed, headers=None):
     info_dict = dict()
-    tables = parsed.get_all_elements('table')
+    tables = get_all_elements_from_parent(parsed, 'table')
     if headers:
-        tables_names = get_element_text(parsed.get_all_elements(headers))
+        tables_names = get_element_text(get_all_elements_from_parent(parsed, headers))
     else:
         tables_names = [None] * len(tables)
     for table, table_name in zip(tables, tables_names):
-        trs = parsed.get_all_elements('tr', parent_element=table)
+        trs = get_all_elements_from_parent(table, 'tr')
         rows_dict = parse_table(trs, parsed, collection_type='dict')
         if rows_dict:
             if table_name:
@@ -81,7 +85,7 @@ def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=
         rows_collection = None
 
     for tr in trs:
-        tds_list = parsed.get_all_elements('td', parent_element=tr)
+        tds_list = get_all_elements_from_parent(tr, 'td')
         tds_text_list = get_element_text(tds_list, sep_text=True)
         row_dict_element = get_cells_data(first_row_index, headers, tds_text_list)
         if row_dict_element:
@@ -128,3 +132,43 @@ def get_all_elements_from_parent(parent_element, element: str, attributes: dict 
         return parent_element.find_all(element, attributes, recursive=recursive)
     except AttributeError:
         return None
+
+
+def make_request(type_, url_, cookies_=None, data_=None, new_headers=None):
+    headers_ = {"User-Agent": UA}
+    if new_headers:
+        headers_.update(new_headers)
+
+    def get_request(url, cookies=None, data=None, headers=None):
+        return requests.get(url, cookies=cookies, data=data, headers=headers)
+
+    def post_request(url, cookies=None, data=None, headers=None):
+        return requests.post(url, cookies=cookies, data=data, headers=headers)
+
+    if type_ == "get":
+        return get_request(url_, cookies=cookies_, data=data_, headers=headers_)
+    elif type_ == "post":
+        return post_request(url_, cookies=cookies_, data=data_, headers=headers_)
+
+
+def get_request_content(request_body):
+    return request_body.content
+
+
+def get_csrf_site_content(url, input_data):
+    def get_csrf_soup(base_url):
+        return soup(requests.Session().get(base_url).content, features="html.parser")
+
+    def get_csrf_token(csrf_soup_data):
+        return csrf_soup_data.findAll('input', attrs={'name': 'csrfmiddlewaretoken'})[0]['value']
+
+    def get_posted_data(base_url, raw_data, csrf):
+        headers = {'Referer': base_url, 'User-Agent': UA}
+        data = {'csrfmiddlewaretoken': csrf}
+        data.update(raw_data)
+        cookies = {'csrftoken': csrf}
+        return requests.Session().post(url, cookies=cookies, data=data, headers=headers).content
+
+    csrf_soup = get_csrf_soup(url)
+    csrf_token = get_csrf_token(csrf_soup)
+    return soup(get_posted_data(url, input_data, csrf_token), features="html.parser")
