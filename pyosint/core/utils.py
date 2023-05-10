@@ -43,7 +43,7 @@ def flatten_card_data(card_data):
     return card_data
 
 
-def get_cells_data(first_row_index, headers, tds):
+def get_cells_data(first_row_index, headers, tds, do_list=False):
     if first_row_index >= 1:
         if len(headers) == len(tds):
             return dict(zip(headers, tds))
@@ -53,7 +53,10 @@ def get_cells_data(first_row_index, headers, tds):
         if len(tds) == 2:
             return {tds[0]: tds[1]}
         elif len(tds) > 2:
-            return {tds[0]: tds[1:]}
+            if do_list:
+                return tds
+            else:
+                return {tds[0]: tds[1:]}
         else:
             return tds[0]
 
@@ -76,7 +79,7 @@ def get_table_dict(parsed, headers=None):
     return info_dict
 
 
-def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None):
+def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None, do_list=False):
     if collection_type == "list":
         rows_collection = []
     elif collection_type == "dict":
@@ -87,7 +90,7 @@ def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=
     for tr in trs:
         tds_list = get_all_elements_from_parent(tr, 'td')
         tds_text_list = get_element_text(tds_list, sep_text=True)
-        row_dict_element = get_cells_data(first_row_index, headers, tds_text_list)
+        row_dict_element = get_cells_data(first_row_index, headers, tds_text_list, do_list)
         if row_dict_element:
             if collection_type == "dict":
                 rows_collection.update(row_dict_element)

@@ -1,7 +1,6 @@
 from pyosint.core.parser import Parser
 from pyosint.core.utils import *
 
-
 URL = "https://dnsdumpster.com/"
 
 
@@ -20,12 +19,20 @@ class DNSDumpster:
 
     def get_site_info(self):
         parsed = get_csrf_site_content(URL, {'targetip': self.input_data, 'user': 'free'})
-        table_data = get_table_dict(parsed)
-        return table_data
+        tables = get_all_elements_from_parent(parsed, 'table')
+        based_data = dict()
+        headers = get_element_text(get_all_elements_from_parent(parsed, 'p',
+                                                                {'style': "color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: left;"}))
+        for header, table in zip(headers, tables):
+            trs = get_all_elements_from_parent(table, 'tr')
+            parsed_table = parse_table(trs, parsed, do_list=True)
+            header = header.split(" **")[0]
+            based_data.update({header: parsed_table})
+        return based_data
 
 
 def main():
-    pass
+    print(DNSDumpster("wotblitz.com").get_site_info())
 
 
 if __name__ == "__main__":
