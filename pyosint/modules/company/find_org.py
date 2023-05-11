@@ -4,6 +4,7 @@ from pyosint.core.utils import *
 
 URL = "http://www.find-org.com"
 
+
 NAME = 'name'
 INN = 'inn'
 OGRN = 'ogrn'

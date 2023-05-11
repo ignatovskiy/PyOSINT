@@ -1,7 +1,9 @@
 from pyosint.core.recognizer import Recognizer
 from pyosint.core.utils import *
 
+
 URL = "https://www.list-org.com"
+
 
 NAME = 'name'
 INN = 'inn'

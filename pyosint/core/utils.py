@@ -57,7 +57,7 @@ def get_cells_data(first_row_index, headers, tds, do_list=False):
                 return tds
             else:
                 return {tds[0]: tds[1:]}
-        else:
+        elif len(tds) == 1:
             return tds[0]
 
 
@@ -79,7 +79,7 @@ def get_table_dict(parsed, headers=None):
     return info_dict
 
 
-def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None, do_list=False):
+def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None, do_list=False, sep_text=True):
     if collection_type == "list":
         rows_collection = []
     elif collection_type == "dict":
@@ -89,7 +89,7 @@ def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=
 
     for tr in trs:
         tds_list = get_all_elements_from_parent(tr, 'td')
-        tds_text_list = get_element_text(tds_list, sep_text=True)
+        tds_text_list = get_element_text(tds_list, sep_text=sep_text)
         row_dict_element = get_cells_data(first_row_index, headers, tds_text_list, do_list)
         if row_dict_element:
             if collection_type == "dict":
@@ -137,10 +137,15 @@ def get_all_elements_from_parent(parent_element, element: str, attributes: dict 
         return None
 
 
-def make_request(type_, url_, cookies_=None, data_=None, new_headers=None):
-    headers_ = {"User-Agent": UA}
+def make_request(type_, url_, cookies_=None, data_=None, new_headers=None, use_default_headers=True):
+    if use_default_headers:
+        headers_ = {"User-Agent": UA}
+    else:
+        headers_ = dict()
     if new_headers:
         headers_.update(new_headers)
+    if not headers_:
+        headers_ = None
 
     def get_request(url, cookies=None, data=None, headers=None):
         return requests.get(url, cookies=cookies, data=data, headers=headers)

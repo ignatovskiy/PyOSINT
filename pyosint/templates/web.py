@@ -18,7 +18,8 @@ class TemplateWeb:
         return f"{URL}/{input_data}"
 
     def get_site_info(self):
-        return None
+        url = self.get_search_url(self.input_data)
+        return url
 
 
 def main():

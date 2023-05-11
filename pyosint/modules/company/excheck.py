@@ -1,5 +1,6 @@
 from pyosint.core.utils import *
 
+
 URL = "https://excheck.pro/company/"
 COMPANY_URL = "https://excheck.pro/search/tips?query="
 

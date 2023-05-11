@@ -1,5 +1,6 @@
 from pyosint.core.utils import *
 
+
 URL = "https://companium.ru/id"
 COMPANY_URL = "https://companium.ru/search/tips?query="
 

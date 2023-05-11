@@ -1,5 +1,6 @@
 from pyosint.core.utils import *
 
+
 URL = "https://dnsdumpster.com/"
 
 
@@ -31,7 +32,7 @@ class DNSDumpster:
 
 
 def main():
-    print(DNSDumpster("wotblitz.com").get_site_info())
+    pass
 
 
 if __name__ == "__main__":
