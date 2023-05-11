@@ -1,4 +1,3 @@
-from pyosint.core.parser import Parser
 from pyosint.core.utils import *
 
 URL = "https://excheck.pro/company/"

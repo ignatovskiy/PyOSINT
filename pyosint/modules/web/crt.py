@@ -1,6 +1,6 @@
 from pyosint.core.utils import *
 
-URL = "https://dnsdumpster.com/"
+URL = "https://crt.sh/?q="
 
 
 class DNSDumpster:
