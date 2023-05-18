@@ -79,7 +79,7 @@ def get_table_dict(parsed, headers=None):
     return info_dict
 
 
-def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None, do_list=False, sep_text=True):
+def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=None, do_list=False, sep_text=True, th_key=False):
     if collection_type == "list":
         rows_collection = []
     elif collection_type == "dict":
@@ -90,6 +90,10 @@ def parse_table(trs, parsed, collection_type='list', first_row_index=0, headers=
     for tr in trs:
         tds_list = get_all_elements_from_parent(tr, 'td')
         tds_text_list = get_element_text(tds_list, sep_text=sep_text)
+        if th_key:
+            headers = get_element_text(get_all_elements_from_parent(tr, 'th'))
+            if not headers:
+                continue
         row_dict_element = get_cells_data(first_row_index, headers, tds_text_list, do_list)
         if row_dict_element:
             if collection_type == "dict":
@@ -115,9 +119,9 @@ def get_element_text(element, sep_text=False):
         if sep_text:
             return [el.get_text(separator='. ', strip=True)
                     .replace("\xa0", ' ').replace("\u2009", ' ').replace('\n', '')
-                    for el in element]
+                    for el in element if not isinstance(el, str)]
         else:
-            return [el.text.replace("\xa0", ' ') for el in element]
+            return [el.text.replace("\xa0", ' ') for el in element if not isinstance(el, str)]
     else:
         if sep_text:
             return element.get_text(separator='. ', strip=True) \
