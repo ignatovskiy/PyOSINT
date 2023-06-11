@@ -1,3 +1,5 @@
+import json
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -29,13 +31,21 @@ def generate_tree(pdf, data, level=0):
 
 
 def generate_pdf_report(data, output_file):
-    pdfmetrics.registerFont(TTFont('DejaVuSerif', '../../fonts/dejavu-serif.ttf', 'UTF-8'))
+    pdfmetrics.registerFont(TTFont('DejaVuSerif', 'fonts/dejavu-serif.ttf', 'UTF-8'))
     pdf = SimpleDocTemplate(output_file, pagesize=letter)
     styles = getSampleStyleSheet()
     styles['Heading1'].fontName = 'DejaVuSerif'
     elements = [Paragraph("OSINT Report", styles['Heading1']), Spacer(1, 0.5 * inch)]
     generate_tree(elements, data)
     pdf.build(elements)
+
+
+def write_data(output_file, data, mode):
+    if mode == "pdf":
+        generate_pdf_report(data=data, output_file=output_file)
+    elif mode == "json":
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
 
 
 def main():

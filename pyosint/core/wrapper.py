@@ -2,8 +2,8 @@ import importlib
 import importlib.util
 import os
 
-from recognizer import Recognizer
-from converter import Converter
+from pyosint.core.recognizer import Recognizer
+from pyosint.core.converter import Converter
 
 
 EXCLUDE_MODULES = ["test.py", "__init__.py"]
@@ -16,13 +16,13 @@ class Wrapper:
         self.category: str = category
 
     def get_categories(self):
-        return Recognizer(self.input_data).get_categories()
+        return [self.category] if self.category else Recognizer(self.input_data).get_categories()
 
     @staticmethod
     def get_modules_list(category):
         return [
             filename[:-3]
-            for filename in os.listdir(f"../modules/{category}/")
+            for filename in os.listdir(f"pyosint/modules/{category}/")
             if filename.endswith(".py") and filename not in EXCLUDE_MODULES
         ]
 
@@ -32,7 +32,7 @@ class Wrapper:
         for category in modules_dict:
             classes[category] = list()
             for file in modules_dict[category]:
-                spec = importlib.util.spec_from_file_location(file, os.path.join(f"../modules/{category}/", f"{file}.py"))
+                spec = importlib.util.spec_from_file_location(file, os.path.join(f"pyosint/modules/{category}/", f"{file}.py"))
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 for name, obj in module.__dict__.items():
