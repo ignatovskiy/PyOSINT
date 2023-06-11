@@ -34,7 +34,7 @@ jobs:
         pytest
     - name: Install PyOSINT
       run: |
-        pip install .
+        pip install -e .
     - name: Test PyOSINT
       run: |
         python3 pyosint -d 1.1.1.1 -f test.json -o json -c web
