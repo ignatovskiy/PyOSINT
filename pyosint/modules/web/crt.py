@@ -17,13 +17,23 @@ class Crt:
     def get_search_url(input_data):
         return f"{URL}{input_data}"
 
-    def get_site_info(self):
+    def get_complex_data(self):
         url = self.get_search_url(self.input_data)
         parsed = self.get_parsed_object(url)
-        table = get_all_elements_from_parent(parsed, 'table')[-1]
-        trs = get_all_elements_from_parent(table, 'tr')
-        parsed_table = parse_table(trs, parsed)
-        return parsed_table
+        table = get_all_elements_from_parent(parsed, 'table')
+        if table:
+            table = table[-1]
+            trs = get_all_elements_from_parent(table, 'tr')
+            parsed_table = parse_table(trs, parsed)
+            try:
+                combined_dict = {}
+                for dict_ in parsed_table:
+                    combined_dict.update(dict_)
+                return combined_dict
+            except ValueError:
+                return parsed_table
+        else:
+            return None
 
 
 def main():

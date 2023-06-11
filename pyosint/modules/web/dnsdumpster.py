@@ -17,7 +17,7 @@ class DNSDumpster:
     def get_search_url(input_data):
         return f"{URL}/?url={input_data}"
 
-    def get_site_info(self):
+    def get_complex_data(self):
         parsed = get_csrf_site_content(URL, {'targetip': self.input_data, 'user': 'free'})
         tables = get_all_elements_from_parent(parsed, 'table')
         based_data = dict()

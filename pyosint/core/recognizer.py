@@ -13,6 +13,11 @@ COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
 ID_REGEXP = r"^[0-9 \-]+$"
 
 
+CATEGORIES = {
+    "person": {"email", "phone", "address", "nickname", "id", "name"},
+    "web": {"ip", "hostname"},
+    "company": {"address", "company", "id"}
+}
 EXCLUDE_TYPES = ["ip", "email"]
 
 
@@ -76,3 +81,11 @@ class Recognizer:
 
     def get_data_types_list(self) -> list:
         return exclude_types([key for key, value in self.get_data_types_dict().items() if value])
+
+    def get_categories(self) -> list:
+        categories = list()
+        types = set(self.get_data_types_list())
+        for key, value in CATEGORIES.items():
+            if value.intersection(types):
+                categories.append(key)
+        return categories

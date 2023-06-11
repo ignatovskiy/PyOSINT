@@ -94,7 +94,7 @@ class ListOrg:
         parsed = self.get_parsed_object(url)
 
         brief_card = get_all_elements_from_parent(parsed, 'div', attributes={'class': 'card w-100 p-1 p-lg-3 mt-1'})
-        if brief_card:
+        if brief_card and len(brief_card) > 1:
             brief_ps = get_all_elements_from_parent(brief_card[1], 'tr')
             brief_dict = get_text_from_ps(brief_ps, clean_key=True)
             info_dict.update(brief_dict)

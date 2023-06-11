@@ -17,7 +17,7 @@ class TemplateWeb:
     def get_search_url(input_data):
         return f"{URL}/{input_data}"
 
-    def get_site_info(self):
+    def get_complex_data(self):
         url = self.get_search_url(self.input_data)
         parsed = self.get_parsed_object(url)
         table = get_all_elements_from_parent(parsed, 'table')

@@ -17,18 +17,20 @@ class WmTips:
     def get_search_url(input_data):
         return f"{URL}/{input_data}"
 
-    def get_site_info(self):
+    def get_complex_data(self):
         url = self.get_search_url(self.input_data)
         parsed = self.get_parsed_object(url)
         tables = get_all_elements_from_parent(parsed, 'table')
-        rows = list()
+        rows = dict()
+        section = 0
         for table in tables:
             trs = get_all_elements_from_parent(table, 'tr')
             temp_table = parse_table(trs, parsed, th_key=True)
             ths = get_element_text(get_all_elements_from_parent(table, 'th'))
             table_dict = dict(zip(ths, temp_table))
             if table_dict:
-                rows.append(table_dict)
+                rows[f"Section {section}"] = table_dict
+            section += 1
         return rows
 
 

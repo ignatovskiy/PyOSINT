@@ -23,15 +23,24 @@ class SecurityHeaders:
         tables = get_all_elements_from_parent(parsed, 'table')
         rows = list()
         headers = get_element_text(get_all_elements_from_parent(parsed, 'div', {"class": "reportTitle"}))
-        headers.remove('Supported By')
+        try:
+            headers.remove('Supported By')
+        except ValueError:
+            pass
         for table in tables:
             trs = get_all_elements_from_parent(table, 'tr')
             parsed_rows = parse_table(trs, parsed, th_key=True, first_row_index=1)
             rows.append(parsed_rows)
         rows = [el for el in rows if el]
-        return dict(zip(headers, rows))
+        new_rows = list()
+        for row in rows:
+            combined_dict = {}
+            for dict_ in row:
+                combined_dict.update(dict_)
+            new_rows.append(combined_dict)
+        return dict(zip(headers, new_rows))
 
-    def get_site_info(self):
+    def get_complex_data(self):
         whois = self.get_whois()
         return whois
 

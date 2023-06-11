@@ -46,15 +46,19 @@ class Excheck:
     def get_brief_info(self, url):
         parsed = self.get_parsed_object(url)
         brief_info_dict = dict()
-        brief_info_div = get_all_elements_from_parent(parsed, 'section', attributes={'class': 'info-columns'})[0]
-        brief_info_subdivs = get_all_elements_from_parent(brief_info_div, 'div', recursive=False)
-        for brief_info_subdiv in brief_info_subdivs:
-            temp_text_list = [el for el in get_element_text(brief_info_subdiv).split('\n') if el]
-            temp_title = temp_text_list[0]
-            temp_text = temp_text_list[1:]
-            if len(temp_text) == 1:
-                temp_text = temp_text[0]
-            brief_info_dict[temp_title] = temp_text
+        brief_info_div = get_all_elements_from_parent(parsed, 'section', attributes={'class': 'info-columns'})
+        if brief_info_div:
+            brief_info_div = brief_info_div[0]
+            brief_info_subdivs = get_all_elements_from_parent(brief_info_div, 'div', recursive=False)
+            for brief_info_subdiv in brief_info_subdivs:
+                temp_text_list = [el for el in get_element_text(brief_info_subdiv).split('\n') if el]
+                temp_title = temp_text_list[0]
+                temp_text = temp_text_list[1:]
+                if len(temp_text) == 1:
+                    temp_text = temp_text[0]
+                brief_info_dict[temp_title] = temp_text
+        else:
+            return None
         return brief_info_dict
 
     def get_company_sphere_info(self, url, key, page=None, headers=None, params=None):
