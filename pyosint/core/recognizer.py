@@ -1,29 +1,12 @@
 import ipaddress
 import re
 
-
-EMAIL_REGEXP = r"^[A-Za-z0-9\._%\+\-]+@([A-Za-z0-9\-]+\.)+[A-Z|a-z]{2,}$"
-PHONE_REGEXP = r"^[\+\(]?[1-9][0-9 .\-\(\)]{0,}[0-9\(\)]$"
-IP_REGEXP = r"^((\b(\d{1,3}\.){3}(\d{1,3})\b)|([A-Fa-f0-9]{1,4}:{1,2}){1,7}([A-Fa-f0-9]{1,4}))$"
-HOST_REGEXP = r"^(https?:\/\/)?(([A-Za-zА-Яа-я0-9\-])+\.)+([A-Za-zА-Яа-я0-9]+)$"
-NAME_REGEXP = r"^([A-Za-zА-Яа-я]+ )+([A-Za-zА-Яа-я]+)$"
-NICK_REGEXP = r"^[\w!@\$%#&\-\?<>~]+$"
-ADDRESS_REGEXP = r"^[а-яА-ЯёЁa-zA-Z0-9\s\.\,\-\/№\(\)&\'\"]+$"
-COMPANY_REGEXP = r"^[а-яА-ЯёЁa-zA-Z\s\d&\(\)\[\]\.\,\-\'\"/]+$"
-ID_REGEXP = r"^[0-9 \-]+$"
-
-
-CATEGORIES = {
-    "person": {"email", "phone", "address", "nickname", "id", "name"},
-    "web": {"ip", "hostname"},
-    "company": {"address", "company", "id"}
-}
-EXCLUDE_TYPES = ["ip", "email"]
+import pyosint.core.constants as constants
 
 
 def exclude_types(types_list):
     for type_ in types_list:
-        if type_ in EXCLUDE_TYPES:
+        if type_ in constants.EXCLUDE_TYPES:
             return [type_]
     return types_list
 
@@ -33,13 +16,13 @@ class Recognizer:
         self.input_data: str = input_data
 
     def is_email(self) -> bool:
-        return bool(re.search(EMAIL_REGEXP, self.input_data))
+        return bool(re.search(constants.EMAIL_REGEXP, self.input_data))
 
     def is_phone(self) -> bool:
-        return bool(re.search(PHONE_REGEXP, self.input_data))
+        return bool(re.search(constants.PHONE_REGEXP, self.input_data))
 
     def is_ip(self) -> bool:
-        if bool(re.search(IP_REGEXP, self.input_data)):
+        if bool(re.search(constants.IP_REGEXP, self.input_data)):
             try:
                 ipaddress.ip_address(self.input_data)
                 return True
@@ -49,22 +32,22 @@ class Recognizer:
             return False
 
     def is_hostname(self) -> bool:
-        return bool(re.search(HOST_REGEXP, self.input_data))
+        return bool(re.search(constants.HOST_REGEXP, self.input_data))
 
     def is_name(self):
-        return bool(re.search(NAME_REGEXP, self.input_data))
+        return bool(re.search(constants.NAME_REGEXP, self.input_data))
 
     def is_nickname(self) -> bool:
-        return bool(re.search(NICK_REGEXP, self.input_data))
+        return bool(re.search(constants.NICK_REGEXP, self.input_data))
 
     def is_address(self) -> bool:
-        return bool(re.search(ADDRESS_REGEXP, self.input_data))
+        return bool(re.search(constants.ADDRESS_REGEXP, self.input_data))
 
     def is_company_name(self) -> bool:
-        return bool(re.search(COMPANY_REGEXP, self.input_data))
+        return bool(re.search(constants.COMPANY_REGEXP, self.input_data))
 
     def is_id(self) -> bool:
-        return bool(re.search(ID_REGEXP, self.input_data))
+        return bool(re.search(constants.ID_REGEXP, self.input_data))
 
     def get_data_types_dict(self) -> dict:
         return {
@@ -85,7 +68,7 @@ class Recognizer:
     def get_categories(self) -> list:
         categories = list()
         types = set(self.get_data_types_list())
-        for key, value in CATEGORIES.items():
+        for key, value in constants.CATEGORIES.items():
             if value.intersection(types):
                 categories.append(key)
         return categories

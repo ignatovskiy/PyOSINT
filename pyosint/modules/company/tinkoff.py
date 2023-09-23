@@ -1,26 +1,25 @@
-from pyosint.core.utils import *
+from pyosint.core.templates.company import Company
 
 
 URL = "https://www.tinkoff.ru/api/common/dadata/suggestions/api/4_1/rs/suggest/party?appName=company-pages"
 COMPANY_URL = "https://www.tinkoff.ru/business/contractor/legal"
 
 
-class Tinkoff:
+class Tinkoff(Company):
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type]
 
     def get_lists_of_orgs(self):
         url = self.get_search_url(self.input_data)
-        orgs_dict = make_request('get', url).json()
+        orgs_dict = self.make_request('get', url).json()
         return orgs_dict
 
-    @staticmethod
-    def format_org_dict(org: dict):
+    def format_org_dict(self, org: dict):
         org.pop('unrestricted_value')
         org['data']['address'].pop('data')
         org['url'] = f"{COMPANY_URL}/{org['data']['ogrn']}/"
-        return remove_null_dict_values(org)
+        return self.remove_null_dict_values(org)
 
     def get_search_results(self):
         results = []
@@ -37,12 +36,10 @@ class Tinkoff:
 
         return complex_data
 
-    @staticmethod
-    def get_parsed_object(url):
-        return get_soup_from_raw(get_request_content(make_request('get', url)))
+    def get_parsed_object(self, url):
+        return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
-    @staticmethod
-    def get_search_url(input_data):
+    def get_search_url(self, input_data):
         return f"{URL}&count=20&query={input_data}"
 
     def get_company_info(self, url):
@@ -52,11 +49,12 @@ class Tinkoff:
             counter += 1
             temp_url = f"{url}/history/{counter}/"
             parsed = self.get_parsed_object(temp_url)
-            divs_list = get_all_elements_from_parent(parsed, 'div', attributes={'class': 'anc1Re'})
-            if divs_list:
-                for div in divs_list:
-                    temp_title = " ".join(get_element_text(get_all_elements_from_parent(div, 'h2')))
-                    temp_text = " ".join(get_element_text(get_all_elements_from_parent(div, 'p')))
+            divs_list = self.get_all_elements_from_parent(parsed, 'div', attributes={'automation-id': 'history-wrapper'})[0]
+            subdivs_list = self.get_all_elements_from_parent(divs_list, 'div')
+            if subdivs_list:
+                for div in subdivs_list:
+                    temp_title = " ".join(self.get_element_text(self.get_all_elements_from_parent(div, 'h2')))
+                    temp_text = " ".join(self.get_element_text(self.get_all_elements_from_parent(div, 'p')))
                     if not info_dict.get(temp_title):
                         info_dict[temp_title] = [temp_text]
                     else:

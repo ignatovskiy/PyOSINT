@@ -4,10 +4,7 @@ import os
 
 from pyosint.core.recognizer import Recognizer
 from pyosint.core.converter import Converter
-
-
-EXCLUDE_MODULES = ["test.py", "__init__.py"]
-EXCLUDE_NAMES = ["Recognizer", "soup"]
+import pyosint.core.constants as constants
 
 
 class Wrapper:
@@ -23,7 +20,7 @@ class Wrapper:
         return [
             filename[:-3]
             for filename in os.listdir(f"pyosint/modules/{category}/")
-            if filename.endswith(".py") and filename not in EXCLUDE_MODULES
+            if filename.endswith(".py") and filename not in constants.EXCLUDE_MODULES
         ]
 
     def get_modules_classes(self):
@@ -36,7 +33,7 @@ class Wrapper:
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 for name, obj in module.__dict__.items():
-                    if isinstance(obj, type) and name not in EXCLUDE_NAMES:
+                    if isinstance(obj, type) and name not in constants.EXCLUDE_NAMES:
                         classes[category].append(obj)
         return classes
 

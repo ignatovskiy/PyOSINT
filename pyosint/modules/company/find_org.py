@@ -1,5 +1,5 @@
 from pyosint.core.recognizer import Recognizer
-from pyosint.core.utils import *
+from pyosint.core.templates.company import Company
 
 
 URL = "http://www.find-org.com"
@@ -22,7 +22,7 @@ DATA_TYPES = {
 }
 
 
-class FindOrg:
+class FindOrg(Company):
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type] if data_type else self.get_input_data_type()
@@ -35,7 +35,7 @@ class FindOrg:
         for data_type in self.data_type:
             urls = self.get_search_urls(data_type, self.input_data)
             for url in urls:
-                lists_of_orgs.extend(get_all_elements_from_parent(self.get_parsed_object(url), 'p'))
+                lists_of_orgs.extend(self.get_all_elements_from_parent(self.get_parsed_object(url), 'p'))
         return set(lists_of_orgs)
 
     def get_search_results(self):
@@ -73,13 +73,11 @@ class FindOrg:
 
         return complex_data
 
-    @staticmethod
-    def get_parsed_object(url):
-        return get_soup_from_raw(get_request_content(make_request('get', url)))
+    def get_parsed_object(self, url):
+        return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
-    @staticmethod
-    def get_search_url(data_type, input_data):
-        return f"{URL}/search/{data_type}/?val={input_data}"
+    def get_search_url(self, *args):
+        return f"{URL}/search/{args[0]}/?val={args[1]}"
 
     def get_search_urls(self, data_type, input_data):
         urls_list = []
@@ -89,8 +87,8 @@ class FindOrg:
 
     def get_company_info(self, url):
         parsed = self.get_parsed_object(url)
-        data_list = get_all_elements_from_parent(parsed, 'p')
-        info_dict = get_text_from_ps(data_list, clean_value=True)
+        data_list = self.get_all_elements_from_parent(parsed, 'p')
+        info_dict = self.get_text_from_ps(data_list, clean_value=True)
         return info_dict
 
 

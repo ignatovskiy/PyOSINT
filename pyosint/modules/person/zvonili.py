@@ -1,26 +1,24 @@
-from pyosint.core.utils import *
-
+from pyosint.core.templates.person import Person
 
 URL = "https://zvonili.com/phone/"
 
 
-class Zvonili():
-    def __init__(self, input_data):
+class Zvonili(Person):
+    def __init__(self, input_data, data_type=None):
         self.input_data = input_data
+        self.data_type = [data_type]
 
-    @staticmethod
-    def get_parsed_object(url):
-        return get_soup_from_raw(get_request_content(make_request('get', url)))
+    def get_parsed_object(self, url):
+        return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
-    @staticmethod
-    def get_search_url(input_data):
+    def get_search_url(self, input_data):
         return f"{URL}{input_data}"
 
     def get_number_data(self, page_soup):
-        number_raw_data = get_all_elements_from_parent(page_soup, 'td')
+        number_raw_data = self.get_all_elements_from_parent(page_soup, 'td')
         number_data = [data.text.strip() for data in number_raw_data][::-2][::-1]
-        number_comments_raw = get_all_elements_from_parent(page_soup, "blockquote", {"class": "card-blockquote"})
-        number_times_raw = get_all_elements_from_parent(page_soup, "span", {"style": "font-size: 14px;"})
+        number_comments_raw = self.get_all_elements_from_parent(page_soup, "blockquote", {"class": "card-blockquote"})
+        number_times_raw = self.get_all_elements_from_parent(page_soup, "span", {"style": "font-size: 14px;"})
         number_times = [data.text.strip() for data in number_times_raw]
         number_comments = [data.text.strip() for data in number_comments_raw]
         return number_data, [f"{time_} | {comment}" for time_, comment in zip(number_times, number_comments)]
