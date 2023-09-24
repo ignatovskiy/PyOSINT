@@ -14,5 +14,5 @@ class Web(Parser):
         pass
 
     @abstractmethod
-    def get_parsed_object(self, url):
+    def get_parsed_object(self, *args):
         pass
