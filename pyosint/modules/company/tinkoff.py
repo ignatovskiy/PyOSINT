@@ -1,11 +1,12 @@
 from pyosint.core.templates.company import Company
 
 
-URL = "https://www.tinkoff.ru/api/common/dadata/suggestions/api/4_1/rs/suggest/party?appName=company-pages"
-COMPANY_URL = "https://www.tinkoff.ru/business/contractor/legal"
+URL = "https://www.tinkoff.ru"
 
 
 class Tinkoff(Company):
+    types = ["company"]
+
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type]
@@ -18,7 +19,7 @@ class Tinkoff(Company):
     def format_org_dict(self, org: dict):
         org.pop('unrestricted_value')
         org['data']['address'].pop('data')
-        org['url'] = f"{COMPANY_URL}/{org['data']['ogrn']}/"
+        org['url'] = f"{URL}/business/contractor/legal/{org['data']['ogrn']}/"
         return self.remove_null_dict_values(org)
 
     def get_search_results(self):
@@ -40,7 +41,8 @@ class Tinkoff(Company):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, input_data):
-        return f"{URL}&count=20&query={input_data}"
+        uri = "api/common/dadata/suggestions/api/4_1/rs/suggest/party?appName=company-pages&count=20"
+        return f"{URL}/{uri}&query={input_data}"
 
     def get_company_info(self, url):
         info_dict = {}
@@ -49,7 +51,9 @@ class Tinkoff(Company):
             counter += 1
             temp_url = f"{url}/history/{counter}/"
             parsed = self.get_parsed_object(temp_url)
-            divs_list = self.get_all_elements_from_parent(parsed, 'div', attributes={'automation-id': 'history-wrapper'})[0]
+            divs_list = self.get_all_elements_from_parent(parsed,
+                                                          'div',
+                                                          attributes={'automation-id': 'history-wrapper'})[0]
             subdivs_list = self.get_all_elements_from_parent(divs_list, 'div')
             if subdivs_list:
                 for div in subdivs_list:

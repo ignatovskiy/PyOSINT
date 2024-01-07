@@ -1,10 +1,11 @@
 from pyosint.core.templates.company import Company
 
-URL = "https://excheck.pro/company/"
-COMPANY_URL = "https://excheck.pro/search/tips?query="
+URL = "https://excheck.pro"
 
 
 class Excheck(Company):
+    types = ["id"]
+
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type]
@@ -18,10 +19,8 @@ class Excheck(Company):
         results = []
         for org in self.get_lists_of_orgs():
             temp_dict = org
-            temp_dict['info'] = self.get_soup_from_raw(temp_dict['content'])
-            temp_dict.pop('content')
-            temp_dict['url'] = f"{URL}{temp_dict['ogrn']}"
-            temp_dict['info'] = self.get_element_text(temp_dict['info'], sep_text=True)
+            temp_inn = temp_dict['content'].split('/company/')[1].split('-')[0]
+            temp_dict['url'] = f"{URL}/company/{temp_inn}"
             results.append(temp_dict)
         return results
 
@@ -38,7 +37,7 @@ class Excheck(Company):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, input_data):
-        return f"{COMPANY_URL}{input_data}"
+        return f"{URL}/search/tips?query={input_data}"
 
     def get_brief_info(self, url):
         parsed = self.get_parsed_object(url)

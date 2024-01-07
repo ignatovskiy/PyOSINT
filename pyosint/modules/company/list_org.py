@@ -1,9 +1,7 @@
 from pyosint.core.recognizer import Recognizer
 from pyosint.core.templates.company import Company
 
-
 URL = "https://www.list-org.com"
-
 
 NAME = 'name'
 INN = 'inn'
@@ -13,7 +11,7 @@ ADDRESS = 'address'
 HEAD = 'boss'
 PHONE = 'phone'
 
-DATA_TYPES = {
+TYPES = {
     'company': [NAME],
     'id': [INN, OGRN, OKPO],
     'address': [ADDRESS],
@@ -23,12 +21,14 @@ DATA_TYPES = {
 
 
 class ListOrg(Company):
+    types = ["company", "id"]
+
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type] if data_type else self.get_input_data_type()
 
     def get_input_data_type(self):
-        return set(Recognizer(self.input_data).get_data_types_list()).intersection(DATA_TYPES.keys())
+        return set(Recognizer(self.input_data).get_data_types_list()).intersection(TYPES.keys())
 
     def get_lists_of_orgs(self):
         lists_of_orgs = []
@@ -79,7 +79,7 @@ class ListOrg(Company):
 
     def get_search_urls(self, data_type, input_data):
         urls_list = []
-        for type_ in DATA_TYPES[data_type]:
+        for type_ in TYPES[data_type]:
             urls_list.append(self.get_search_url(type_, input_data))
         return urls_list
 
@@ -91,13 +91,16 @@ class ListOrg(Company):
 
         parsed = self.get_parsed_object(url)
 
-        brief_card = self.get_all_elements_from_parent(parsed, 'div', attributes={'class': 'card w-100 p-1 p-lg-3 mt-1'})
+        brief_card = self.get_all_elements_from_parent(parsed, 'div',
+                                                       attributes={'class': 'card w-100 p-1 p-lg-3 mt-1'})
         if brief_card and len(brief_card) > 1:
             brief_ps = self.get_all_elements_from_parent(brief_card[1], 'tr')
             brief_dict = self.get_text_from_ps(brief_ps, clean_key=True)
             info_dict.update(brief_dict)
 
-        cards = self.get_all_elements_from_parent(parsed, 'div', attributes={'class': 'card w-100 p-1 p-lg-3 mt-2'})
+        cards = self.get_all_elements_from_parent(parsed,
+                                                  'div',
+                                                  attributes={'class': 'card w-100 p-1 p-lg-3 mt-2'})
 
         for card in cards:
             h6_element = self.get_all_elements_from_parent(card, 'h6')
@@ -125,8 +128,8 @@ class ListOrg(Company):
                 if not headers:
                     first_row_index = 0
 
-                rows_list = self.parse_table(trs[first_row_index:], parsed, collection_type='list',
-                                        first_row_index=first_row_index, headers=headers)
+                rows_list = self.parse_table(trs[first_row_index:], collection_type='list',
+                                             first_row_index=first_row_index, headers=headers)
                 if rows_list:
                     info_dict[h6].append(rows_list)
 

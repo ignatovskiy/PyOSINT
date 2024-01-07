@@ -1,7 +1,7 @@
 from pyosint.core.templates.web import Web
 
 
-URL = "https://analyzeid.com/id"
+URL = "https://analyzeid.com"
 
 
 class AnalyzeID(Web):
@@ -13,7 +13,7 @@ class AnalyzeID(Web):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, input_data):
-        return f"{URL}/{input_data}"
+        return f"{URL}/id/{input_data}"
 
     def get_complex_data(self):
         url = self.get_search_url(self.input_data)
@@ -22,7 +22,7 @@ class AnalyzeID(Web):
         if table:
             trs = self.get_all_elements_from_parent(table[0], 'tr')
             ths = self.get_element_text(self.get_all_elements_from_parent(trs[0], 'th'))
-            site_info = self.parse_table(trs, parsed, do_list=True)
+            site_info = self.parse_table(trs, do_list=True)
             if site_info:
                 return dict(zip(ths, site_info[0]))
             else:
@@ -32,7 +32,7 @@ class AnalyzeID(Web):
 
 
 def main():
-    pass
+    pass  # U-NW
 
 
 if __name__ == "__main__":
