@@ -8,11 +8,11 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
+#  from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 
 
-def generate_tree(pdf, data, level=0, font_size=None):
+def generate_tree(pdf: list, data: dict, level: int = 0, font_size=None) -> None:
     styles = getSampleStyleSheet()
     indent = level * 25
 
@@ -54,7 +54,7 @@ def generate_tree(pdf, data, level=0, font_size=None):
         pdf.append(Paragraph(clean_text, value_style))
 
 
-def generate_pdf_report(data, output_file):
+def generate_pdf_report(data: dict, output_file: str) -> None:
     module_dir = os.path.dirname(os.path.abspath(__file__))
     font_path = os.path.join(module_dir, "fonts", "dejavu-serif.ttf")
     pdfmetrics.registerFont(TTFont('DejaVuSerif', font_path, 'UTF-8'))
@@ -69,23 +69,23 @@ def generate_pdf_report(data, output_file):
     elements = [Paragraph("", artwork), Spacer(1, 0.5 * inch)]
     generate_tree(elements, data)
 
-    def myLaterPages(canvas, doc):
+    def make_pages(canvas, doc) -> None:
         canvas.saveState()
         canvas.rect(10, 10, A4[0]-20, A4[1]-20, fill=0)
         canvas.setFont('DejaVuSerif', 8)
         canvas.drawString(A4[0] // 2, 15, "%d" % doc.page)
         canvas.restoreState()
 
-    def myFirstPage(canvas, doc):
+    def make_first_page(canvas, doc) -> None:
         canvas.saveState()
         canvas.setFont('DejaVuSerif', 40)
         canvas.drawString(A4[0] // 2, A4[1] // 2, "%s" % "OSINT Report")
         canvas.restoreState()
 
-    pdf.build(elements, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
+    pdf.build(elements, onFirstPage=make_first_page, onLaterPages=make_pages)
 
 
-def write_data(output_file, data, mode):
+def write_data(output_file: str, data: dict, mode: str) -> None:
     if mode == "pdf":
         generate_pdf_report(data=data, output_file=output_file)
     elif mode == "json":

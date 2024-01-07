@@ -1,12 +1,14 @@
 from pyosint.core.templates.web import Web
-import pyosint.core.reporter as Reporter
 
-URL = "https://www.iplocation.net/get-ipdata"
+
+URL = "https://www.iplocation.net"
 
 DATA_SOURCES = ["ipbase", "criminalip", "ipapico", "ipgeolocation", "ipregistry", "dbip", "ipinfo", "ip2location"]
 
 
 class IpLocation(Web):
+    types = ["ip"]
+
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type]
@@ -19,14 +21,17 @@ class IpLocation(Web):
             "ipv": "4"
         }
 
-        raw_json_dict = self.make_request('post', url, data_=data_dict).json()
-        json_dict = raw_json_dict['res']
-        if json_dict.get('data'):
-            json_dict = json_dict['data']
+        try:
+            raw_json_dict = self.make_request('post', url, data_=data_dict).json()
+            json_dict = raw_json_dict['res']
+            if json_dict.get('data'):
+                json_dict = json_dict['data']
+        except AttributeError:
+            return dict()
         return json_dict
 
     def get_search_url(self, input_data):
-        return URL
+        return f"{URL}/get-ipdata"
 
     def get_complex_data(self):
         complex_data = dict()
@@ -36,8 +41,7 @@ class IpLocation(Web):
 
 
 def main():
-    a = IpLocation('7.7.7.7').get_complex_data()
-    Reporter.generate_pdf_report(a, 'iplocation.pdf')
+    pass
 
 
 if __name__ == "__main__":

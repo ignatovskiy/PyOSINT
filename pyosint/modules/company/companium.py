@@ -1,11 +1,11 @@
 from pyosint.core.templates.company import Company
 
-
-URL = "https://companium.ru/id"
-COMPANY_URL = "https://companium.ru/search/tips?query="
+URL = "https://companium.ru"
 
 
 class Companium(Company):
+    types = ["id", "company"]
+
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
         self.data_type = [data_type]
@@ -21,7 +21,8 @@ class Companium(Company):
             temp_dict = org
             temp_dict['info'] = self.get_soup_from_raw(temp_dict['content'])
             temp_dict.pop('content')
-            temp_dict['url'] = f"{URL}/{self.get_all_elements_from_parent(temp_dict['info'], 'a')[0].get('href')[4:]}"
+            temp_id = self.get_all_elements_from_parent(temp_dict['info'], 'a')[0].get('href')[4:].split('-')[0]
+            temp_dict['url'] = f"{URL}/id/{temp_id}"
             temp_dict['info'] = self.get_element_text(temp_dict['info'], sep_text=True)
             results.append(temp_dict)
         return results
@@ -39,13 +40,13 @@ class Companium(Company):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, input_data):
-        return f"{COMPANY_URL}{input_data}"
+        return f"{URL}/search/tips?query={input_data}"
 
     def get_brief_info(self, url):
         parsed = self.get_parsed_object(url)
         brief_info_dict = dict()
         brief_info_div = self.get_all_elements_from_parent(parsed, 'div',
-                                                      attributes={'class': 'col-12 col-xl-6 border-xl-start'})[0]
+                                                           attributes={'class': 'col-12 col-xl-6 border-xl-start'})[0]
         brief_info_subdivs = self.get_all_elements_from_parent(brief_info_div, 'div', recursive=False)
         for brief_info_subdiv in brief_info_subdivs:
             temp_text_list = [el for el in self.get_element_text(brief_info_subdiv).split('\n') if el]
@@ -61,7 +62,8 @@ class Companium(Company):
         contact_info_dict = dict()
         contact_info_divs = self.get_all_elements_from_parent(parsed, 'div', attributes={'class': 'col-12 col-lg-4'})
         contact_info_divs.extend(self.get_all_elements_from_parent(parsed, 'div',
-                                                              attributes={'class': 'col-12 col-lg-4 border-lg-start'}))
+                                                                   attributes={
+                                                                       'class': 'col-12 col-lg-4 border-lg-start'}))
         for contact_info_div in contact_info_divs:
             contact_info_header = self.get_element_text(
                 self.get_all_elements_from_parent(contact_info_div, 'strong'))

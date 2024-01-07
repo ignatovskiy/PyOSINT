@@ -1,19 +1,12 @@
 import argparse
 
-
-from pyosint.core import wrapper, reporter
+from pyosint.core.wrapper import Wrapper
+from pyosint.core.reporter import write_data
+from pyosint.core.logger import log
+from pyosint.core.recognizer import Recognizer
 
 
 SUPPORTED_FORMATS = ["pdf", "json"]
-
-
-def log(log_type, text):
-    logs_type = {"info": "[I]: ",
-                 "good": "[+]: ",
-                 "bad": "[-]: ",
-                 "error": "[X]: ",
-                 "ask": "[?]: "}
-    print(f"{logs_type[log_type]}{text}")
 
 
 def main():
@@ -31,12 +24,12 @@ def main():
         if args.output:
             if args.file:
                 if args.output in SUPPORTED_FORMATS:
-                    category = args.category if args.category else None
+                    category = args.category if args.category else Recognizer(args.data).get_categories()[0]
                     log('info', f"Starting data parsing")
-                    data = wrapper.Wrapper(args.data, category).handle_parsers()
+                    data = Wrapper(args.data, category).handle_parsers()
                     log('good', 'Data was parsed.')
                     log('info', f"Starting data writing to {args.file} ({args.output} format)")
-                    reporter.write_data(args.file, data, args.output)
+                    write_data(args.file, data, args.output)
                     log('good', f"Data was written to {args.file}")
                 else:
                     log('error', 'Unsupported output type provided. Use -o pdf or -o json.')
