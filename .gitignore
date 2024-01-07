@@ -130,3 +130,4 @@ dmypy.json
 
 .ai
 .DS_Store
+!/pyosint/modules/web/test.py
