@@ -12,31 +12,61 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 
 
-def generate_tree(pdf: list, data: dict, level: int = 0, font_size=None) -> None:
+def generate_tree(pdf: list, data: dict | list | str, level: int = 0, font_size: int = None) -> None:
     styles = getSampleStyleSheet()
     indent = level * 25
 
     if font_size is None:
         font_size = 20
 
+    def set_key_page_style(page_style):
+        page_style.fontName = 'DejaVuSerif'
+        page_style.leftIndent = indent
+        page_style.fontSize = font_size
+        page_style.textColor = (0, 0, 0.8)
+        return page_style
+
+    def set_value_page_style(page_style):
+        page_style.fontName = 'DejaVuSerif'
+        page_style.leftIndent = indent
+        page_style.fontSize = 14
+        page_style.leading = font_size * 0.95
+        page_style.spaceBefore = 0
+        page_style.spaceAfter = 0
+        return page_style
+
+    def set_zero_ident_style(page_style):
+        page_style.fontSize = 28
+        page_style.alignment = 1
+        page_style.textColor = (0.5, 0.2, 0.8)
+        return page_style
+
+    def set_non_zero_ident_style(page_style):
+        page_style.spaceBefore = 0
+        page_style.spaceAfter = 0
+        return page_style
+
+    def add_key_paragraph(text: str, page_style):
+        clean_text = re.sub(r'<.*?>', '', str(text))
+        paragraph = Paragraph(clean_text, page_style)
+        paragraph.keepWithNext = True
+        return paragraph
+
+    def add_value_paragraph(text: str, page_style):
+        clean_text = re.sub(r'<.*?>', '', str(text))
+        paragraph = Paragraph(clean_text, page_style)
+        return paragraph
+
     if isinstance(data, dict):
         for key, value in data.items():
             key_style = styles['Heading1']
-            styles['Heading1'].fontName = 'DejaVuSerif'
-            key_style.leftIndent = indent
-            key_style.fontSize = font_size
-            key_style.textColor = (0, 0, 0.8)
+            key_style = set_key_page_style(key_style)
             if indent == 0:
                 pdf.append(PageBreak())
-                key_style.fontSize = 28
-                key_style.alignment = 1
-                key_style.textColor = (0.5, 0.2, 0.8)
+                key_style = set_zero_ident_style(key_style)
             else:
-                key_style.spaceBefore = 0
-                key_style.spaceAfter = 0
-            clean_text = re.sub(r'<.*?>', '', str(key))
-            key_paragraph = Paragraph(clean_text, key_style)
-            key_paragraph.keepWithNext = True
+                key_style = set_non_zero_ident_style(key_style)
+            key_paragraph = add_key_paragraph(key, key_style)
             pdf.append(key_paragraph)
             generate_tree(pdf, value, level + 1, font_size - 1)
     elif isinstance(data, list):
@@ -44,14 +74,9 @@ def generate_tree(pdf: list, data: dict, level: int = 0, font_size=None) -> None
             generate_tree(pdf, item, level + 1, font_size - 1)
     else:
         value_style = styles['Normal']
-        styles['Normal'].fontName = 'DejaVuSerif'
-        value_style.leftIndent = indent
-        value_style.fontSize = 14
-        value_style.leading = font_size * 0.95
-        value_style.spaceBefore = 0
-        value_style.spaceAfter = 0
-        clean_text = re.sub(r'<.*?>', '', str(data))
-        pdf.append(Paragraph(clean_text, value_style))
+        value_style = set_value_page_style(value_style)
+        value_paragraph = add_value_paragraph(data, value_style)
+        pdf.append(value_paragraph)
 
 
 def generate_pdf_report(data: dict, output_file: str) -> None:

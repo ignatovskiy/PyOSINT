@@ -18,6 +18,13 @@ class Wrapper:
     def get_categories(self) -> list:
         return [self.category] if self.category else Recognizer(self.input_data).get_categories()
 
+    def get_modules_dict(self) -> dict:
+        modules_dict: dict = dict()
+        categories: list = self.get_categories()
+        for category in categories:
+            modules_dict[category] = self.get_modules_list(category)
+        return modules_dict
+
     @staticmethod
     def get_modules_list(category: str) -> list:
         return [
@@ -26,22 +33,31 @@ class Wrapper:
             if filename.endswith(".py") and filename not in exclusions.EXCLUDE_MODULES
         ]
 
+    @staticmethod
+    def import_module(file: str, category: str):
+        spec = importlib.util.spec_from_file_location(
+            file,
+            os.path.join(f"pyosint/modules/{category}/",
+                         f"{file}.py"
+                         ))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def import_modules(self, modules_dict: dict, category: str):
+        modules = list()
+        for file in modules_dict[category]:
+            module = self.import_module(file, category)
+            for name, obj in module.__dict__.items():
+                if isinstance(obj, type) and name not in exclusions.EXCLUDE_NAMES:
+                    modules.append(obj)
+        return modules
+
     def get_modules_classes(self) -> dict:
         classes: dict = dict()
-        modules_dict = self.import_modules()
+        modules_dict = self.get_modules_dict()
         for category in modules_dict:
-            classes[category] = list()
-            for file in modules_dict[category]:
-                spec = importlib.util.spec_from_file_location(
-                    file,
-                    os.path.join(f"pyosint/modules/{category}/",
-                                 f"{file}.py"
-                                 ))
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-                for name, obj in module.__dict__.items():
-                    if isinstance(obj, type) and name not in exclusions.EXCLUDE_NAMES:
-                        classes[category].append(obj)
+            classes[category] = self.import_modules(modules_dict, category)
         return classes
 
     @staticmethod
@@ -80,13 +96,6 @@ class Wrapper:
                     pass
 
         return data
-
-    def import_modules(self) -> dict:
-        modules_dict: dict = dict()
-        categories: list = self.get_categories()
-        for category in categories:
-            modules_dict[category] = self.get_modules_list(category)
-        return modules_dict
 
 
 def main():
