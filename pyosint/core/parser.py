@@ -1,3 +1,5 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup as bSoup
 
@@ -121,17 +123,18 @@ class Parser:
     def get_element_text(element, sep_text=False) -> list | str:
         if isinstance(element, list):
             if sep_text:
-                return [el.get_text(separator='. ', strip=True)
-                        .replace("\xa0", ' ').replace("\u2009", ' ').replace('\n', '')
+                return [re.sub(r'\s{2,}', ' ', el.get_text("\n", strip=True)
+                        .replace("\xa0", ' ').replace("\u2009", ' ')).split("\n")
                         for el in element if not isinstance(el, str)]
             else:
-                return [el.text.replace("\xa0", ' ') for el in element if not isinstance(el, str)]
+                return [re.sub(r'\s{2,}', ' ', el.text.replace("\xa0", ' '))
+                        for el in element if not isinstance(el, str)]
         else:
             if sep_text:
-                return element.get_text(separator='. ', strip=True) \
-                    .replace("\xa0", ' ').replace("\u2009", ' ').replace('\n', '')
+                return (re.sub(r'\s{2,}', ' ', element.get_text("\n", strip=True)
+                        .replace("\xa0", ' ').replace("\u2009", ' '))).split("\n")
             else:
-                return element.text.replace("\xa0", ' ')
+                return re.sub(r'\s{2,}', ' ', element.text.replace("\xa0", ' '))
 
     @staticmethod
     def get_soup_from_raw(content) -> bSoup:
