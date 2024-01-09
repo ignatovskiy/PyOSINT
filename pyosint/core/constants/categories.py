@@ -1,5 +1,5 @@
 CATEGORIES = {
     "person": {"email", "phone", "address", "nickname", "id", "name"},
-    "web": {"ip", "hostname"},
+    "web": {"ip", "hostname", "id"},
     "company": {"address", "company", "id"}
 }

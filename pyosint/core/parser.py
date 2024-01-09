@@ -33,16 +33,37 @@ class Parser:
                     ps_dict[data_key] = data_value
         return ps_dict
 
-    @staticmethod
-    def flatten_card_data(card_data: dict | list) -> dict | list:
-        if len(card_data) == 1:
-            if isinstance(card_data[0], dict):
-                return card_data[0]
-            elif isinstance(card_data[0], list) and isinstance(card_data[0][0], dict):
-                if len(card_data[0]) == 1:
-                    return card_data[0][0]
+    def flatten_card_data(self, card_data: dict | list) -> dict | list:
+        def flatten_dict(unflatten_dict):
+            card_dict = dict()
+            for key, value in unflatten_dict.items():
+                temp_key = key
+                temp_value = value
+                if isinstance(key, list) and len(key) == 1:
+                    temp_key = key[0]
+                if isinstance(value, list) and len(value) == 1:
+                    temp_value = value[0]
+                card_dict[temp_key] = temp_value
+            return card_dict
+
+        def flatten_list(unflatten_list):
+            if isinstance(unflatten_list[0], dict):
+                return self.flatten_card_data(unflatten_list[0])
+            elif isinstance(unflatten_list[0], list) and isinstance(unflatten_list[0][0], dict):
+                if len(unflatten_list[0]) == 1:
+                    return self.flatten_card_data(unflatten_list[0][0])
                 else:
-                    return card_data[0]
+                    return self.flatten_card_data(unflatten_list[0])
+
+        if len(card_data) == 1 and isinstance(card_data, list):
+            return flatten_list(card_data)
+        elif isinstance(card_data, dict):
+            return flatten_dict(card_data)
+        elif len(card_data) > 1 and isinstance(card_data, list) and all(isinstance(item, dict) for item in card_data):
+            flatten_multi_dict = list()
+            for card in card_data:
+                flatten_multi_dict.append(flatten_dict(card))
+            return flatten_multi_dict
         return card_data
 
     @staticmethod
@@ -81,7 +102,7 @@ class Parser:
         return info_dict
 
     def parse_table(self, trs: list, collection_type: str = 'list', first_row_index: int = 0, headers: list = None,
-                    do_list: bool = False, sep_text: bool = True, th_key: bool = False) -> list | dict:
+                    do_list: bool = False, sep_text: bool = True, th_key: bool = False, tds_ready: bool = False) -> list | dict:
         rows_collection: None = None
         if collection_type == "list":
             rows_collection: list = []
@@ -89,8 +110,11 @@ class Parser:
             rows_collection: dict = dict()
 
         for tr in trs:
-            tds_list: list = self.get_all_elements_from_parent(tr, 'td')
-            tds_text_list: list = self.get_element_text(tds_list, sep_text=sep_text)
+            if not tds_ready:
+                tds_list: list = self.get_all_elements_from_parent(tr, 'td')
+                tds_text_list: list = self.get_element_text(tds_list, sep_text=sep_text)
+            else:
+                tds_text_list: list = trs
             if th_key:
                 headers: list = self.get_element_text(self.get_all_elements_from_parent(tr, 'th'))
                 if not headers:
@@ -107,6 +131,8 @@ class Parser:
                             rows_collection["Остальное"] = list()
                 elif collection_type == "list":
                     rows_collection.append(row_dict_element)
+            if tds_ready:
+                break
         return rows_collection
 
     def remove_null_dict_values(self, org: dict) -> dict:
@@ -144,6 +170,8 @@ class Parser:
     def get_all_elements_from_parent(parent_element, element: str, attributes: dict = None,
                                      recursive=True) -> list | None:
         try:
+            for br_tag in parent_element.find_all('br'):
+                br_tag.replace_with('\n')
             return parent_element.find_all(element, attributes, recursive=recursive)
         except AttributeError:
             return None

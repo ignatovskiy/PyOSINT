@@ -16,5 +16,5 @@ class Web(Parser):
         pass
 
     @abstractmethod
-    def get_parsed_object(self, *args) -> BeautifulSoup:
+    def get_parsed_object(self, *args) -> BeautifulSoup | dict | bytes:
         pass
