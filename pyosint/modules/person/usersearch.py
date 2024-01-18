@@ -1,4 +1,5 @@
 from pyosint.core.categories.person import Person
+from pyosint.core.cmd import handle_cmd_args_module
 
 
 URL = "https://usersearch.org"
@@ -33,7 +34,7 @@ class UserSearch(Person):
 
 
 def main():
-    pass  # TODO ASYNC
+    handle_cmd_args_module(UserSearch)  # TODO ASYNC
 
 
 if __name__ == "__main__":
