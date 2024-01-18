@@ -1,4 +1,6 @@
 from pyosint.core.categories.person import Person
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://www.steamidfinder.com"
 
@@ -23,16 +25,15 @@ class SteamIdFinder(Person):
         try:
             table = self.get_all_elements_from_parent(parsed, 'table', {'id': 'profile-info'})[0]
             trs = self.get_all_elements_from_parent(table, 'tr')
-            parsed_rows = self.parse_table(trs, table, th_key=True)
-            ths = self.get_element_text(self.get_all_elements_from_parent(table, 'th'))
-            table_dict = dict(zip(ths, parsed_rows))
+            ths = self.get_all_elements_from_parent(table, 'th')
+            table_dict = self.parse_table(trs, headers=ths)
         except IndexError:
-            return dict()
+            return {}
         return table_dict
 
 
 def main():
-    pass
+    handle_cmd_args_module(SteamIdFinder)
 
 
 if __name__ == "__main__":

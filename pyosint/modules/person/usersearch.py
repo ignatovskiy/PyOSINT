@@ -1,5 +1,7 @@
-from pyosint.core.categories.person import Person
+import time
 
+from pyosint.core.categories.person import Person
+from pyosint.core.cmd import handle_cmd_args_module
 
 URL = "https://usersearch.org"
 
@@ -18,22 +20,33 @@ class UserSearch(Person):
         return f"{URL}/results_advanced.php?URL_username={input_data}"
 
     def get_complex_data(self):
-        ps = list()
+        ps = set()
 
-        for i in range(0, 6):
-            if i == 0:
-                url = self.get_search_url(self.input_data)
-            else:
-                url = f"{URL}/results_advanced{str(i)}.php?URL_username={self.input_data}"
+        def get_urls_list():
+            urls_list = []
+            bad_indexes = [3, 5, 6, 7]
+            for i in range(0, 11):
+                if i not in bad_indexes:
+                    if i == 0:
+                        url = self.get_search_url(self.input_data)
+                    else:
+                        url = f"{URL}/results_advanced{str(i)}.php?URL_username={self.input_data}"
+                    urls_list.append(url)
+            return urls_list
+
+        def process_iteration(url):
             parsed = self.get_parsed_object(url)
             divs_list = self.get_all_elements_from_parent(parsed, 'div', {"class": "results-item-content"})
-            ps += [self.get_all_elements_from_parent(el, 'a')[0].get('href') for el in divs_list
-                   if len(self.get_all_elements_from_parent(el, 'a')) > 0]
-        return {"Found": ps}
+            [ps.add(self.get_all_elements_from_parent(el, 'a')[0].get('href')) for el in divs_list
+             if len(self.get_all_elements_from_parent(el, 'a')) > 0]
+
+        urls = get_urls_list()
+        self.process_requests_concurrently(process_iteration, urls)
+        return {"Found": list(ps)}
 
 
 def main():
-    pass  # TODO ASYNC
+    handle_cmd_args_module(UserSearch)
 
 
 if __name__ == "__main__":

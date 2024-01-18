@@ -1,4 +1,6 @@
 from pyosint.core.categories.person import Person
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://zvonili.com"
 
@@ -55,7 +57,7 @@ class Zvonili(Person):
 
 
 def main():
-    pass
+    handle_cmd_args_module(Zvonili)
 
 
 if __name__ == "__main__":
