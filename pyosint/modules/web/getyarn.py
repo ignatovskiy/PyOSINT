@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://getyarn.io"
 
@@ -19,12 +21,12 @@ class GetYarn(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         divs = self.get_all_elements_from_parent(parsed, 'div', {"class": "card tight bg-w"})
-        clips = dict()
+        clips = {}
         for div in divs:
             div_title = self.get_all_elements_from_parent(div,
                                                           'div',
                                                           {"class": "title ab fw5 p025 px05 tal"})[0]
-            div_title_text = self.get_element_text(div_title).strip()
+            div_title_text = self.parse_strings_list([div_title])
             pre_link = self.get_all_elements_from_parent(div, "a", {"class": "p"})[0].get('href')
             pre_link = pre_link.replace("/yarn-clip/", "")
             link = f"https://y.yarn.co/{pre_link}.mp4"
@@ -36,7 +38,7 @@ class GetYarn(Web):
 
 
 def main():
-    pass
+    handle_cmd_args_module(GetYarn)
 
 
 if __name__ == "__main__":

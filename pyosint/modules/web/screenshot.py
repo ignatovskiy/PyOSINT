@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://prod-alt.screenshot.api.visualping.io"
 
@@ -22,14 +24,11 @@ class Screenshot(Web):
 
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url())
-        screenshot_name = f"{self.input_data}-screenshot.png"
-        with open(screenshot_name, "wb") as f:
-            f.write(parsed)
-        return {"Screenshot": screenshot_name}
+        return {"Screenshot": ''}
 
 
 def main():
-    pass
+    handle_cmd_args_module(Screenshot)
 
 
 if __name__ == "__main__":

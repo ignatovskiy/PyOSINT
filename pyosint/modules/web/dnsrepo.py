@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://dnsrepo.noc.org"
 
@@ -20,13 +22,13 @@ class DnsRepo(Web):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         table = self.get_all_elements_from_parent(parsed,'table', {"class": "table mg-b-0"})[0]
         trs = self.get_all_elements_from_parent(table, 'tr')
-        ths = self.get_element_text(self.get_all_elements_from_parent(table, 'th'))
+        ths = self.get_all_elements_from_parent(table, 'th')
         parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
         return parsed_table
 
 
 def main():
-    pass
+    handle_cmd_args_module(DnsRepo)
 
 
 if __name__ == "__main__":

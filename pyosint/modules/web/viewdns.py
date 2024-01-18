@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://viewdns.info"
 
@@ -14,24 +16,30 @@ class ViewDns(Web):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, section, input_data):
-        return f"{URL}/{section}={input_data}"
+        return f"{URL}/{section}/?domain={input_data}"
 
     def get_complex_data(self):
-        section = "dnsreport/?domain"
-        parsed = self.get_parsed_object(self.get_search_url(section, self.input_data))
-        try:
-            table = self.get_all_elements_from_parent(parsed, 'table', {"border": "1"})[0]
-            headers_tr = self.get_all_elements_from_parent(table, 'tr')[0]
-            headers = self.get_element_text(self.get_all_elements_from_parent(headers_tr, 'td'))
-            trs = self.get_all_elements_from_parent(table, 'tr')[1:]
-            parsed_rows = self.parse_table(trs, headers=headers, first_row_index=1)
-        except IndexError:
-            return dict()
-        return parsed_rows
+        sections = ["iphistory", "ismysitedown"]
+        parsed_dict = {}
+
+        def process_section(section):
+            parsed = self.get_parsed_object(self.get_search_url(section, self.input_data))
+            tables = self.get_all_elements_from_parent(parsed, 'table', {"border": "1"})
+            parsed_data = []
+            for table in tables:
+                headers_tr = self.get_all_elements_from_parent(table, 'tr')[0]
+                headers = self.get_all_elements_from_parent(headers_tr, 'td')
+                trs = self.get_all_elements_from_parent(table, 'tr')[1:]
+                parsed_rows = self.parse_table(trs, headers=headers, first_row_index=1)
+                parsed_data.extend(parsed_rows)
+            parsed_dict[section] = parsed_data
+
+        self.process_requests_concurrently(process_section, reqs=sections)
+        return parsed_dict
 
 
 def main():
-    pass
+    handle_cmd_args_module(ViewDns)
 
 
 if __name__ == "__main__":

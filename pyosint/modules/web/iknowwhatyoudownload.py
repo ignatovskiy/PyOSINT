@@ -1,10 +1,12 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://iknowwhatyoudownload.com"
 
 
 class IKnowWhatYouDownload(Web):
-    types = ["ip", "hostname"]
+    types = ["ip"]
 
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
@@ -18,15 +20,17 @@ class IKnowWhatYouDownload(Web):
 
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
-        table = self.get_all_elements_from_parent(parsed, 'table', {'class': 'table table-condensed table-striped'})[0]
+        table = self.get_all_elements_from_parent(parsed,
+                                                  'table',
+                                                  {'class': 'table table-condensed table-striped'})[0]
         trs = self.get_all_elements_from_parent(table, 'tr')[1:]
-        ths = self.get_element_text(self.get_all_elements_from_parent(table, 'th'))
+        ths = self.get_all_elements_from_parent(table, 'th')
         parsed_rows = self.parse_table(trs, do_list=True, headers=ths, first_row_index=1)
         return parsed_rows
 
 
 def main():
-    pass
+    handle_cmd_args_module(IKnowWhatYouDownload)
 
 
 if __name__ == "__main__":

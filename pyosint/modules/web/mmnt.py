@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://www.mmnt.ru"
 
@@ -24,7 +26,7 @@ class MMNT(Web):
 
 
 def main():
-    pass
+    handle_cmd_args_module(MMNT)
 
 
 if __name__ == "__main__":

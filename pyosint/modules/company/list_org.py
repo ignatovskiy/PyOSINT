@@ -1,5 +1,5 @@
 from pyosint.core.recognizer import Recognizer
-from pyosint.core.templates.company import Company
+from pyosint.core.categories.company import Company
 
 URL = "https://www.list-org.com"
 

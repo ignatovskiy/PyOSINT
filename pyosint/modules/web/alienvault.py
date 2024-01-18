@@ -1,6 +1,5 @@
-import concurrent.futures
-
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
 
 URL = "https://otx.alienvault.com"
 
@@ -20,40 +19,35 @@ class AlienVault(Web):
 
     def get_complex_data(self):
         categories = {"analysis": "facts", "passive_dns": "passive_dns", "geo": None}
-        data_dict = dict()
+        data_dict = {}
 
         def process_category(category):
             parsed = self.get_parsed_object(self.get_search_url(self.input_data, category))
-            if categories[category]:
-                facts = parsed[categories[category]]
-                if category == "analysis":
-                    facts_data = {key: value for key, value in facts.items() if value}
-                    analysis_data = self.flatten_card_data(facts_data)
-                    data_dict.update({"analysis": analysis_data})
-                else:
-                    facts_list = list()
-                    facts_keys = ["address", "first", "last", "hostname", "record_type", "flag_title", "asn"]
-                    for fact in facts:
-                        facts_list.append({el: fact[el] for el in fact if el in facts_keys})
-                    data_dict.update({"passive_dns": facts_list})
+
+            if category == "analysis":
+                facts_data = {key: value for key, value in parsed.get(categories[category], {}).items() if value}
+                analysis_data = self.flatten_card_data(facts_data)
+                if analysis_data:
+                    data_dict["analysis"] = analysis_data
+            elif category == "passive_dns":
+                facts_list = [
+                    {el: fact[el] for el in fact if
+                     el in ["address", "first", "last", "hostname", "record_type", "flag_title", "asn"]}
+                    for fact in parsed.get(categories[category], [])
+                ]
+                if facts_list:
+                    data_dict["passive_dns"] = facts_list
             else:
-                data_dict.update({"geo": parsed})
+                geo_data = {key: value for key, value in parsed.items() if value}
+                if geo_data:
+                    data_dict["geo"] = geo_data
 
-        def process_categories_concurrently():
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                futures = {executor.submit(process_category, category): category for category in categories}
-
-                for future in concurrent.futures.as_completed(futures):
-                    try:
-                        future.result()
-                    except TypeError:
-                        pass
-        process_categories_concurrently()
+        self.process_requests_concurrently(process_category, reqs=categories)
         return data_dict
 
 
 def main():
-    pass
+    handle_cmd_args_module(AlienVault)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://sitereport.netcraft.com"
 
@@ -20,26 +22,27 @@ class NetCraft(Web):
 
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
-        data_list = list()
+        data_list = []
         tables = self.get_all_elements_from_parent(parsed, 'table')
         for table in tables:
             trs = self.get_all_elements_from_parent(table, 'tr')
-            ths = self.get_element_text(self.get_all_elements_from_parent(table, 'th'))
-            table_data = self.flatten_card_data(self.parse_table(trs, headers=ths, first_row_index=1))
-            temp_table_data = list()
+            ths = self.get_all_elements_from_parent(table, 'th')
+            table_data = self.parse_table(trs, headers=ths, first_row_index=1)
+            temp_table_data = []
             if table_data:
-                for table_el in table_data:
-                    if isinstance(table_el, dict):
-                        if table_el.get("Popular sites using this technology"):
-                            del table_el["Popular sites using this technology"]
-                        temp_table_data.append(table_el)
+                if isinstance(table_data, dict):
+                    table_data = [table_data]
+                temp_table_data = [
+                    {key: value for key, value in table_el.items() if key != "Popular sites using this technology"}
+                    for table_el in table_data if isinstance(table_el, dict)
+                ]
             if temp_table_data not in data_list:
                 data_list.extend(temp_table_data)
         return data_list
 
 
 def main():
-    pass
+    handle_cmd_args_module(NetCraft)
 
 
 if __name__ == "__main__":

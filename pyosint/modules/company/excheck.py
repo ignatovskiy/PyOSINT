@@ -1,4 +1,4 @@
-from pyosint.core.templates.company import Company
+from pyosint.core.categories.company import Company
 
 URL = "https://excheck.pro"
 

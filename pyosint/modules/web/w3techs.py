@@ -1,5 +1,8 @@
-from pyosint.core.templates.web import Web
 import re
+
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://w3techs.com"
 
@@ -25,7 +28,7 @@ class W3techs(Web):
                                                attributes={
                                                    'class': [re.compile(r'\bsi_h\b'), re.compile(r'\bsi_tech\b')]})
         ps_text = [el for el in ps if el.a.text]
-        techs_dict = dict()
+        techs_dict = {}
         temp_key = None
         for text in ps_text:
             if text.attrs['class'][0] == 'si_h':
@@ -42,7 +45,7 @@ class W3techs(Web):
 
 
 def main():
-    pass
+    handle_cmd_args_module(W3techs)
 
 
 if __name__ == "__main__":

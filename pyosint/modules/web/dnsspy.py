@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://dnsspy.io"
 
@@ -18,19 +20,19 @@ class DnsSpy(Web):
 
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
-        h1_list = self.get_element_text(self.get_all_elements_from_parent(parsed, 'h1'))[1:]
+        h1_list = self.parse_strings_list(self.get_all_elements_from_parent(parsed, 'h1')[1:])
         tables = self.get_all_elements_from_parent(parsed, 'table')
-        data_dict = dict()
+        data_dict = {}
         for table, h1 in zip(tables, h1_list):
             trs = self.get_all_elements_from_parent(table, 'tr')
-            ths = self.get_element_text(self.get_all_elements_from_parent(table, 'th'))
+            ths = self.get_all_elements_from_parent(table, 'th')
             parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
             data_dict[h1] = parsed_table
         return data_dict
 
 
 def main():
-    pass
+    handle_cmd_args_module(DnsSpy)
 
 
 if __name__ == "__main__":

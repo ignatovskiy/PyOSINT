@@ -1,4 +1,4 @@
-from pyosint.core.templates.company import Company
+from pyosint.core.categories.company import Company
 
 URL = "https://companium.ru"
 
@@ -23,7 +23,7 @@ class Companium(Company):
             temp_dict.pop('content')
             temp_id = self.get_all_elements_from_parent(temp_dict['info'], 'a')[0].get('href')[4:].split('-')[0]
             temp_dict['url'] = f"{URL}/id/{temp_id}"
-            temp_dict['info'] = self.get_element_text(temp_dict['info'], sep_text=True)
+            temp_dict['info'] = self.get_element_text(temp_dict['info'])
             results.append(temp_dict)
         return results
 

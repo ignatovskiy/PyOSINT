@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://rapiddns.io"
 
@@ -14,7 +16,7 @@ class RapidDns(Web):
         return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
 
     def get_search_url(self, input_data):
-        return f"{URL}/s/{input_data}#result"
+        return f"{URL}/s/{input_data}?full=1"
 
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
@@ -24,13 +26,13 @@ class RapidDns(Web):
         thead = self.get_all_elements_from_parent(table, 'thead')[0]
         tbody = self.get_all_elements_from_parent(table, 'tbody')[0]
         trs = self.get_all_elements_from_parent(tbody, 'tr')
-        ths = self.get_element_text(self.get_all_elements_from_parent(thead, 'th'))[1:]
+        ths = self.get_all_elements_from_parent(thead, 'th')[1:]
         parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
         return parsed_table
 
 
 def main():
-    pass
+    handle_cmd_args_module(RapidDns)
 
 
 if __name__ == "__main__":
