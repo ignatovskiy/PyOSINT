@@ -1,4 +1,4 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
 
 
 URL = "https://analyzeid.com"

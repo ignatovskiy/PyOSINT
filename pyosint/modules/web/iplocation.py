@@ -1,4 +1,5 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
 
 
 URL = "https://www.iplocation.net"
@@ -34,14 +35,21 @@ class IpLocation(Web):
         return f"{URL}/get-ipdata"
 
     def get_complex_data(self):
-        complex_data = dict()
-        for data_source in DATA_SOURCES:
-            complex_data[data_source] = self.get_parsed_object(self.get_search_url(self.input_data), data_source)
+        data_sources = ["ipbase", "criminalip", "ipapico", "ipgeolocation", "ipregistry", "dbip", "ipinfo",
+                        "ip2location"]
+        complex_data = {}
+        exclusions = [None, "", "This parameter is unavailable in selected .BIN data file. Please upgrade."]
+
+        def process_category(data_source):
+            parsed_dict = self.get_parsed_object(self.get_search_url(self.input_data), data_source)
+            complex_data[data_source] = {key: value for key, value in parsed_dict.items() if value not in exclusions}
+
+        self.process_requests_concurrently(process_category, reqs=data_sources)
         return complex_data
 
 
 def main():
-    pass
+    handle_cmd_args_module(IpLocation)
 
 
 if __name__ == "__main__":

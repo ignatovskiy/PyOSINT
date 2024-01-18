@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://crt.sh"
 
@@ -21,24 +23,15 @@ class Crt(Web):
     def get_complex_data(self):
         url = self.get_search_url(self.input_data)
         parsed = self.get_parsed_object(url)
-        table = self.get_all_elements_from_parent(parsed, 'table')
-        if table:
-            table = table[-1]
-            trs = self.get_all_elements_from_parent(table, 'tr')
-            parsed_table = self.parse_table(trs)
-            try:
-                combined_dict = {}
-                for dict_ in parsed_table:
-                    combined_dict.update(dict_)
-                return combined_dict
-            except ValueError:
-                return parsed_table
-        else:
-            return None
+        table = self.get_all_elements_from_parent(parsed, 'table')[-1]
+        trs = self.get_all_elements_from_parent(table, 'tr')
+        ths = self.get_all_elements_from_parent(table, 'th')
+        parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
+        return parsed_table
 
 
 def main():
-    pass
+    handle_cmd_args_module(Crt)
 
 
 if __name__ == "__main__":

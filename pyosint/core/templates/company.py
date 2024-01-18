@@ -1,32 +1,47 @@
-from abc import abstractmethod
-
-from bs4 import BeautifulSoup
-
-from pyosint.core.parser import Parser
+from pyosint.core.categories.company import Company
+from pyosint.core.cmd import handle_cmd_args_module
 
 
-class Company(Parser):
+URL = ""
 
-    @abstractmethod
-    def get_lists_of_orgs(self) -> dict:
-        pass
 
-    @abstractmethod
-    def get_search_results(self) -> list:
-        pass
+class CompanyModule(Company):
+    types = []
 
-    @abstractmethod
-    def get_complex_data(self) -> list:
-        pass
+    def __init__(self, input_data, data_type=None):
+        self.input_data = input_data
+        self.data_type = [data_type]
 
-    @abstractmethod
-    def get_parsed_object(self, url) -> BeautifulSoup:
-        pass
+    def get_lists_of_orgs(self):
+        url = self.get_search_url(self.input_data)
+        orgs_dict = self.make_request('get', url).json()
+        return orgs_dict
 
-    @abstractmethod
-    def get_search_url(self, input_data) -> str:
-        pass
+    def format_org_dict(self, org: dict):
+        return self.remove_null_dict_values(org)
 
-    @abstractmethod
-    def get_company_info(self, url) -> dict:
-        pass
+    def get_search_results(self):
+        return [self.format_org_dict(org) for org in self.get_lists_of_orgs()]
+
+    def get_complex_data(self):
+        return [self.get_company_info(result['url']) for result in self.get_search_results()]
+
+    def get_parsed_object(self, url):
+        return self.get_soup_from_raw(self.get_request_content(self.make_request('get', url)))
+
+    def get_search_url(self, input_data):
+        return f"{URL}/{input_data}"
+
+    def get_company_info(self, url):
+        info_dict = {}
+        parsed = self.get_parsed_object(url)
+        info_dict = parsed
+        return info_dict
+
+
+def main():
+    handle_cmd_args_module(CompanyModule)
+
+
+if __name__ == "__main__":
+    main()

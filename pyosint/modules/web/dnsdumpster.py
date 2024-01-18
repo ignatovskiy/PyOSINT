@@ -1,4 +1,6 @@
-from pyosint.core.templates.web import Web
+from pyosint.core.categories.web import Web
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://dnsdumpster.com/"
 
@@ -19,21 +21,22 @@ class DNSDumpster(Web):
     def get_complex_data(self):
         parsed = self.get_csrf_site_content(URL, {'targetip': self.input_data, 'user': 'free'})
         tables = self.get_all_elements_from_parent(parsed, 'table')
-        based_data = dict()
+        based_data = {}
         style = "color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: left;"
-        headers = self.get_element_text(self.get_all_elements_from_parent(parsed,
-                                                                          'p',
-                                                                          {'style': style}))
+        headers = self.parse_strings_list(
+            self.get_all_elements_from_parent(parsed,
+                                              'p',
+                                              {'style': style}))
         for header, table in zip(headers, tables):
             trs = self.get_all_elements_from_parent(table, 'tr')
-            parsed_table = self.parse_table(trs, do_list=True)
+            parsed_table = self.parse_table(trs)
             header = header.split(" **")[0]
             based_data.update({header: parsed_table})
         return based_data
 
 
 def main():
-    pass
+    handle_cmd_args_module(DNSDumpster)
 
 
 if __name__ == "__main__":

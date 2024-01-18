@@ -1,4 +1,4 @@
-from pyosint.core.templates.person import Person
+from pyosint.core.categories.person import Person
 
 
 URL = "https://usersearch.org"

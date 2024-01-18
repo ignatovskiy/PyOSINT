@@ -1,6 +1,6 @@
 import importlib
 import importlib.util
-import os
+from pathlib import Path
 import concurrent.futures
 from functools import partial
 
@@ -19,53 +19,48 @@ class Wrapper:
         return [self.category] if self.category else Recognizer(self.input_data).get_categories()
 
     def get_modules_dict(self) -> dict:
-        modules_dict: dict = dict()
-        categories: list = self.get_categories()
-        for category in categories:
-            modules_dict[category] = self.get_modules_list(category)
+        categories = self.get_categories()
+        modules_dict = {category: self.get_modules_list(category) for category in categories}
         return modules_dict
 
     @staticmethod
     def get_modules_list(category: str) -> list:
+        module_path = Path("pyosint") / "modules" / category
         return [
-            filename[:-3]
-            for filename in os.listdir(f"pyosint/modules/{category}/")
-            if filename.endswith(".py") and filename not in exclusions.EXCLUDE_MODULES
+            filename.stem
+            for filename in module_path.glob("*.py")
+            if filename.stem not in exclusions.EXCLUDE_MODULES
         ]
 
     @staticmethod
     def import_module(file: str, category: str):
-        spec = importlib.util.spec_from_file_location(
-            file,
-            os.path.join(f"pyosint/modules/{category}/",
-                         f"{file}.py"
-                         ))
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        module = importlib.import_module(f"pyosint.modules.{category}.{file}")
         return module
 
     def import_modules(self, modules_dict: dict, category: str):
-        modules = list()
-        for file in modules_dict[category]:
-            module = self.import_module(file, category)
-            for name, obj in module.__dict__.items():
-                if isinstance(obj, type) and name not in exclusions.EXCLUDE_NAMES:
-                    modules.append(obj)
+        modules = [
+            obj
+            for file in modules_dict[category]
+            for name, obj in self.import_module(file, category).__dict__.items()
+            if isinstance(obj, type) and name not in exclusions.EXCLUDE_NAMES
+        ]
         return modules
 
     def get_modules_classes(self) -> dict:
-        classes: dict = dict()
         modules_dict = self.get_modules_dict()
-        for category in modules_dict:
-            classes[category] = self.import_modules(modules_dict, category)
+        classes = {category: self.import_modules(modules_dict, category) for category in modules_dict}
         return classes
 
     @staticmethod
     def process_class(category, class_, input_data, types):
         class_name = class_.__name__
+
         if class_name.lower() != category.lower():
             temp_class = class_(input_data)
-            if set(types).intersection(set(temp_class.types)):
+            temp_types_set = set(types)
+            temp_class_types_set = set(temp_class.types)
+
+            if temp_types_set.intersection(temp_class_types_set):
                 log("info", f"Starting {class_name} module parsing")
                 temp_data = temp_class.get_complex_data()
                 log("good", f"Successful {class_name} module parsing")
@@ -84,8 +79,8 @@ class Wrapper:
         with concurrent.futures.ThreadPoolExecutor() as executor:
             partial_process_class = partial(self.process_class, input_data=self.input_data, types=types)
 
-            futures = {executor.submit(partial_process_class, category, class_): class_ for category, class_list in
-                       classes_dict.items() for class_ in class_list}
+            futures = [executor.submit(partial_process_class, category, class_) for category, class_list in
+                       classes_dict.items() for class_ in class_list]
 
             for future in concurrent.futures.as_completed(futures):
                 try:
