@@ -18,7 +18,7 @@ class CompanyModule(Company):
         return orgs_dict
 
     def format_org_dict(self, org: dict):
-        return self.remove_null_dict_values(org)
+        return self.flatten_card_data(org)
 
     def get_search_results(self):
         return [self.format_org_dict(org) for org in self.get_lists_of_orgs()]

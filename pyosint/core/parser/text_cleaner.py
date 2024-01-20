@@ -13,20 +13,21 @@ def remove_symbols(raw_element):
 def strip_text(temp_list):
     temp_stripped_list = [
         [item if isinstance(item, str) else [el for el in item if el]
-         for item in sublist]
+         for item in sublist] if isinstance(sublist, list) else sublist
         for sublist in temp_list if sublist
     ]
     return flatten_card_data(temp_stripped_list)
 
 
 def clean_text(temp_element):
-    for br_tag in temp_element.find_all('br'):
-        br_tag.replace_with('\n' * 10)
-
-    temp_list = [remove_symbols(subel)
-                 for subel in temp_element.get_text().split('\n' * 10)]
-
-    return temp_list
+    if temp_element:
+        for br_tag in temp_element.find_all('br'):
+            br_tag.replace_with('\n' * 10)
+        temp_list = [remove_symbols(subel)
+                     for subel in temp_element.get_text('\n' * 10).split('\n' * 10)]
+        return temp_list
+    else:
+        return []
 
 
 def get_element_text(element) -> list | str:

@@ -5,7 +5,6 @@ from pyosint.core.parser.flattener import flatten_card_data
 from pyosint.core.parser.text_cleaner import get_element_text, parse_strings_list
 from pyosint.core.parser.requester import make_request
 from pyosint.core.parser.middleware_parser import get_soup_from_raw, get_all_elements_from_parent, get_request_content
-from pyosint.core.parser.misc import clean_attr, get_text_from_ps, get_table_dict, remove_null_dict_values
 from pyosint.core.parser.table_handler import get_cells_data, parse_table
 from pyosint.core.parser.concurrenter import process_requests_concurrently
 
@@ -45,23 +44,6 @@ class Parser:
     def get_request_content(request_body):
         return get_request_content(request_body)
 
-    # misc
-    @staticmethod
-    def clean_attr(attr: str, attr_type: str) -> str:
-        return clean_attr(attr, attr_type)
-
-    @staticmethod
-    def get_text_from_ps(ps: list, clean_value: bool = False, clean_key: bool = False) -> dict:
-        return get_text_from_ps(ps, clean_value, clean_key)
-
-    @staticmethod
-    def get_table_dict(parsed: bSoup, headers: str = None) -> dict:
-        return get_table_dict(parsed, headers)
-
-    @staticmethod
-    def remove_null_dict_values(org: dict) -> dict:
-        return remove_null_dict_values(org)
-
     # requesting
     @staticmethod
     def make_request(type_: str, url_: str, cookies_: dict = None, data_: dict = None, new_headers: dict = None,
@@ -70,8 +52,9 @@ class Parser:
 
     # table handling
     @staticmethod
-    def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False) -> list | dict | None:
-        return get_cells_data(first_row_index, headers, tds, do_list)
+    def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False,
+                       list_of_lists: bool = False) -> list | dict | None:
+        return get_cells_data(first_row_index, headers, tds, do_list, list_of_lists)
 
     @staticmethod
     def parse_table(trs: list, collection_type: str = 'list', first_row_index: int = 0, headers: list = None,

@@ -5,6 +5,7 @@ from time import time
 import traceback
 
 from pyosint.core.logger import log
+from pyosint.core.recognizer import Recognizer
 
 
 def handle_cmd_args_module(cls):
@@ -30,14 +31,18 @@ def handle_cmd_args_module(cls):
         )
 
     instance = None
+    input_data = args.input_data
 
     start_time = time()
 
     for i in range(3):
-        log("info", f"Starting parsing info about {args.input_data} via {class_name} module.")
+        log("info", f"Starting parsing info about {input_data} via {class_name} module.")
+
+        data_type = list(set.intersection(set(Recognizer(input_data).get_data_types_list()),
+                                          cls.types)) if not args.data_type else args.data_type
 
         try:
-            instance = cls(args.input_data, args.data_type).get_complex_data()
+            instance = cls(input_data, data_type).get_complex_data()
             break
         except Exception as e:
             log("bad", f"Parsing is failed.")
