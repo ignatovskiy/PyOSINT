@@ -21,7 +21,7 @@ class AnalyzeID(Web):
         table = self.get_all_elements_from_parent(parsed, 'table')
         if table:
             trs = self.get_all_elements_from_parent(table[0], 'tr')
-            ths = self.get_element_text(self.get_all_elements_from_parent(trs[0], 'th'))
+            ths = self.parse_strings_list(self.get_all_elements_from_parent(trs[0], 'th'))
             site_info = self.parse_table(trs, do_list=True)
             if site_info:
                 return dict(zip(ths, site_info[0]))

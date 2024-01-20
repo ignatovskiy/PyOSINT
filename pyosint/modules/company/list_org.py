@@ -1,5 +1,6 @@
-from pyosint.core.recognizer import Recognizer
 from pyosint.core.categories.company import Company
+from pyosint.core.cmd import handle_cmd_args_module
+
 
 URL = "https://www.list-org.com"
 
@@ -25,10 +26,7 @@ class ListOrg(Company):
 
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
-        self.data_type = [data_type] if data_type else self.get_input_data_type()
-
-    def get_input_data_type(self):
-        return set(Recognizer(self.input_data).get_data_types_list()).intersection(TYPES.keys())
+        self.data_type = data_type
 
     def get_lists_of_orgs(self):
         lists_of_orgs = []
@@ -95,8 +93,8 @@ class ListOrg(Company):
                                                        attributes={'class': 'card w-100 p-1 p-lg-3 mt-1'})
         if brief_card and len(brief_card) > 1:
             brief_ps = self.get_all_elements_from_parent(brief_card[1], 'tr')
-            brief_dict = self.get_text_from_ps(brief_ps, clean_key=True)
-            info_dict.update(brief_dict)
+            brief_dict = self.parse_table(brief_ps, collection_type='dict')
+            info_dict.update({'brief': brief_dict})
 
         cards = self.get_all_elements_from_parent(parsed,
                                                   'div',
@@ -105,11 +103,10 @@ class ListOrg(Company):
         for card in cards:
             h6_element = self.get_all_elements_from_parent(card, 'h6')
             if h6_element:
-                h6 = self.get_element_text(h6_element[0])
+                h6 = self.parse_strings_list(h6_element[0])
             else:
                 continue
-            h6 = self.clean_attr(h6, attr_type='key')
-            info_dict[h6] = list()
+            info_dict[h6] = []
             if card.table:
                 headers = []
 
@@ -122,7 +119,7 @@ class ListOrg(Company):
                     first_row_index += 1
                     tth_elements = self.get_all_elements_from_parent(tr, 'td', attributes={"class": "tth"})
                     if tth_elements:
-                        headers = self.get_element_text(tth_elements)
+                        headers = self.parse_strings_list(tth_elements)
                         break
 
                 if not headers:
@@ -134,9 +131,23 @@ class ListOrg(Company):
                     info_dict[h6].append(rows_list)
 
             ps = self.get_all_elements_from_parent(card, 'p')
-            ps_dict = self.get_text_from_ps(ps, clean_key=True, clean_value=True)
-            if ps_dict:
-                info_dict[h6].append(ps_dict)
+            if ps:
+                ps_dict = self.parse_strings_list(ps)
+                if ps_dict:
+                    info_dict[h6].append(self.get_cells_data(tds=ps_dict, first_row_index=0, do_list=False,
+                                                             headers=[], list_of_lists=True))
+            else:
+                divs = self.get_all_elements_from_parent(card, 'div')
+                table = self.get_all_elements_from_parent(card, 'table')
+                if table:
+                    table = table[0]
+                    trs = self.get_all_elements_from_parent(table, 'tr')[2:]
+                    card_data_text = self.parse_table(trs)
+                else:
+                    card_data_text = self.parse_strings_list(divs)
+
+                if card_data_text:
+                    info_dict[h6].append(card_data_text)
 
             card_data = info_dict[h6]
             info_dict[h6] = self.flatten_card_data(card_data)
@@ -144,7 +155,7 @@ class ListOrg(Company):
 
 
 def main():
-    pass
+    handle_cmd_args_module(ListOrg)
 
 
 if __name__ == "__main__":

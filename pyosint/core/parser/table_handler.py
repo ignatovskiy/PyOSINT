@@ -31,10 +31,13 @@ def handle_row_collection(rows_collection, row_dict_element, collection_type):
     return rows_collection
 
 
-def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False) -> list | dict | None:
+def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False, list_of_lists: bool = False)\
+        -> list | dict | None:
     if first_row_index >= 1 and len(headers) == len(tds):
         return dict(zip(headers, tds))
     elif first_row_index == 0:
+        if list_of_lists and len(tds) >= 1:
+            return {sublist[0]: sublist[1:] for sublist in tds if isinstance(sublist, list)}
         if len(tds) == 2:
             temp_key = tds[0][0] if isinstance(tds[0], list) and len(tds[0]) == 1 else tds[0]
             return {temp_key: tds[1]}
@@ -43,7 +46,10 @@ def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool
             if do_list:
                 return temp_list
             else:
-                return {temp_list[0]: temp_list[1:]}
+                if temp_list[0] != '':
+                    return {temp_list[0]: temp_list[1:]}
+                else:
+                    return {temp_list[1]: temp_list[2:]}
         elif len(tds) == 1:
             return tds[0]
     return None
