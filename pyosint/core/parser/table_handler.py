@@ -33,11 +33,13 @@ def handle_row_collection(rows_collection, row_dict_element, collection_type):
 
 def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False, list_of_lists: bool = False)\
         -> list | dict | None:
+    if not isinstance(tds, list):
+        return tds
+    if list_of_lists and len(tds) >= 1:
+        return {sublist[0]: sublist[1:] for sublist in tds if isinstance(sublist, list)}
     if first_row_index >= 1 and len(headers) == len(tds):
         return dict(zip(headers, tds))
     elif first_row_index == 0:
-        if list_of_lists and len(tds) >= 1:
-            return {sublist[0]: sublist[1:] for sublist in tds if isinstance(sublist, list)}
         if len(tds) == 2:
             temp_key = tds[0][0] if isinstance(tds[0], list) and len(tds[0]) == 1 else tds[0]
             return {temp_key: tds[1]}
@@ -47,7 +49,13 @@ def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool
                 return temp_list
             else:
                 if temp_list[0] != '':
-                    return {temp_list[0]: temp_list[1:]}
+                    if isinstance(temp_list[0], str):
+                        return {temp_list[0]: temp_list[1:]}
+                    else:
+                        if isinstance(temp_list[1], str):
+                            return {temp_list[1]: [temp_list[0]] + temp_list[2:]}
+                        else:
+                            return temp_list
                 else:
                     return {temp_list[1]: temp_list[2:]}
         elif len(tds) == 1:
@@ -60,7 +68,7 @@ def parse_table(trs: list, collection_type: str = 'list', first_row_index: int =
     rows_collection = init_row_collection(collection_type)
 
     if headers:
-        headers = parse_strings_list(headers)
+        headers = [el[0] if isinstance(el, list) else el for el in parse_strings_list(headers)]
 
     for tr in trs:
         if not tds_ready:

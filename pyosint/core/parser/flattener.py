@@ -53,6 +53,29 @@ def flatten_list_el(list_el, pass_empty):
     return list_el
 
 
+def transform_list_to_dict(raw_list):
+    result = [{}]
+    current_key = None
+
+    if isinstance(raw_list, list):
+        for item in raw_list:
+            if isinstance(item, str) and item.endswith(":"):
+                temp_key = item.strip(":")
+                if current_key != temp_key:
+                    current_key = temp_key
+                    result[0][current_key] = []
+            else:
+                if current_key is not None:
+                    result[0][current_key].append(item)
+                else:
+                    result.append(item)
+        if isinstance(result[0], dict) and not result[0]:
+            result.pop(0)
+        return result
+    else:
+        return raw_list
+
+
 def flatten_list(unflatten_list, pass_empty):
     temp_list = [flatten_list_el(el, pass_empty) for el in unflatten_list if pass_empty or el]
     if temp_list:
@@ -62,7 +85,7 @@ def flatten_list(unflatten_list, pass_empty):
             temp_list = combine_dicts_if_unique_keys(temp_list)
     else:
         return ''
-    return temp_list
+    return transform_list_to_dict(temp_list)
 
 
 def flatten_card_data(card_data: dict | list | str, pass_empty=False) -> dict | list:

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as bSoup
 
 from pyosint.core.parser.csrf_parser import get_csrf_site_content
-from pyosint.core.parser.flattener import flatten_card_data
+from pyosint.core.parser.flattener import flatten_card_data, transform_list_to_dict
 from pyosint.core.parser.text_cleaner import get_element_text, parse_strings_list
 from pyosint.core.parser.requester import make_request
 from pyosint.core.parser.middleware_parser import get_soup_from_raw, get_all_elements_from_parent, get_request_content
@@ -22,6 +22,10 @@ class Parser:
         return get_csrf_site_content(url, input_data)
 
     # flattening
+    @staticmethod
+    def transform_list_to_dict(raw_list: list):
+        return transform_list_to_dict(raw_list)
+
     @staticmethod
     def flatten_card_data(card_data: dict | list | str, pass_empty=False) -> dict | list:
         return flatten_card_data(card_data, pass_empty)
@@ -52,7 +56,7 @@ class Parser:
 
     # table handling
     @staticmethod
-    def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool = False,
+    def get_cells_data(tds: list, first_row_index: int = None, headers: list = None, do_list: bool = False,
                        list_of_lists: bool = False) -> list | dict | None:
         return get_cells_data(first_row_index, headers, tds, do_list, list_of_lists)
 

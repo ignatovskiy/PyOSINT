@@ -27,11 +27,7 @@ class ClearWebStats(Web):
         for index in indexes:
             temp_trs = self.get_all_elements_from_parent(tables[index], 'tr')
             temp_table = self.parse_table(temp_trs)
-
-            if isinstance(temp_table, dict):
-                parsed_data.update(temp_table)
-            elif isinstance(temp_table, list):
-                parsed_data.update({"Detailed": temp_table})
+            parsed_data.update(temp_table)
 
         useless_values = ["Not Applicable", '']
         parsed_data = {key: value for key, value in parsed_data.items() if

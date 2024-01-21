@@ -24,8 +24,7 @@ class Elmasy(Web):
         h2 = self.get_all_elements_from_parent(parsed,
                                                'h2',
                                                {"class": "self-start max-lg:text-xl lg:text-2xl"})
-        h2_text_list = [el.replace("\n", "").replace("-> ", "").replace("->", "")
-                        for el in self.parse_strings_list(h2)]
+        h2_text_list = [el[1] for el in self.parse_strings_list(h2)]
         for h2_text in h2_text_list:
             temp_div = self.get_all_elements_from_parent(parsed, 'div', {"id": h2_text})[0]
             temp_table = self.get_all_elements_from_parent(temp_div, 'table')

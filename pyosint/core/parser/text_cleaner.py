@@ -10,12 +10,17 @@ def remove_symbols(raw_element):
                   raw_element.translate(TRANSLATION_TABLE).strip())
 
 
+def remove_single_symbols(symbols_str):
+    return symbols_str if len(symbols_str) != 1 else None
+
+
 def strip_text(temp_list):
     temp_stripped_list = [
-        [item if isinstance(item, str) else [el for el in item if el]
+        [remove_single_symbols(item) if isinstance(item, str) else [el for el in item if el]
          for item in sublist] if isinstance(sublist, list) else sublist
         for sublist in temp_list if sublist
     ]
+
     return flatten_card_data(temp_stripped_list)
 
 

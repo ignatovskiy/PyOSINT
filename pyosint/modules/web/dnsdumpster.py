@@ -30,7 +30,7 @@ class DNSDumpster(Web):
         for header, table in zip(headers, tables):
             trs = self.get_all_elements_from_parent(table, 'tr')
             parsed_table = self.parse_table(trs)
-            header = header.split(" **")[0]
+            header = header[0] if isinstance(header, list) else header
             based_data.update({header: parsed_table})
         return based_data
 
