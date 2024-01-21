@@ -21,7 +21,7 @@ class DNSDumpster(Web):
     def get_complex_data(self):
         parsed = self.get_csrf_site_content(URL, {'targetip': self.input_data, 'user': 'free'})
         tables = self.get_all_elements_from_parent(parsed, 'table')
-        based_data = {}
+        complex_data = {}
         style = "color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: left;"
         headers = self.parse_strings_list(
             self.get_all_elements_from_parent(parsed,
@@ -31,8 +31,8 @@ class DNSDumpster(Web):
             trs = self.get_all_elements_from_parent(table, 'tr')
             parsed_table = self.parse_table(trs)
             header = header[0] if isinstance(header, list) else header
-            based_data.update({header: parsed_table})
-        return based_data
+            complex_data.update({header: parsed_table})
+        return complex_data
 
 
 def main():

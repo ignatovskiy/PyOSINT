@@ -22,13 +22,13 @@ class DnsSpy(Web):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         h1_list = self.parse_strings_list(self.get_all_elements_from_parent(parsed, 'h1')[1:])
         tables = self.get_all_elements_from_parent(parsed, 'table')
-        data_dict = {}
+        complex_data = {}
         for table, h1 in zip(tables, h1_list):
             trs = self.get_all_elements_from_parent(table, 'tr')
             ths = self.get_all_elements_from_parent(table, 'th')
             parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
-            data_dict[h1] = parsed_table
-        return data_dict
+            complex_data[h1] = parsed_table
+        return complex_data
 
 
 def main():

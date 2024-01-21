@@ -25,8 +25,8 @@ class IKnowWhatYouDownload(Web):
                                                   {'class': 'table table-condensed table-striped'})[0]
         trs = self.get_all_elements_from_parent(table, 'tr')[1:]
         ths = self.get_all_elements_from_parent(table, 'th')
-        parsed_rows = self.parse_table(trs, do_list=True, headers=ths, first_row_index=1)
-        return parsed_rows
+        complex_data = self.parse_table(trs, do_list=True, headers=ths, first_row_index=1)
+        return complex_data
 
 
 def main():

@@ -26,8 +26,8 @@ class Crt(Web):
         table = self.get_all_elements_from_parent(parsed, 'table')[-1]
         trs = self.get_all_elements_from_parent(table, 'tr')
         ths = self.get_all_elements_from_parent(table, 'th')
-        parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
-        return parsed_table
+        complex_data = self.parse_table(trs, headers=ths, first_row_index=1)
+        return complex_data
 
 
 def main():

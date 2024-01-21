@@ -20,7 +20,7 @@ class BuildWith(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         divs = self.get_all_elements_from_parent(parsed, 'div', {"class": "row mb-1 mt-1"})
-        data_dict = []
+        complex_data = []
 
         for div in divs:
             title = self.parse_strings_list(self.get_all_elements_from_parent(div, 'h2'))
@@ -35,8 +35,8 @@ class BuildWith(Web):
             if len(category) > 0 and category[0]:
                 temp_dict.update({"Category": category})
 
-            data_dict.append(temp_dict)
-        return data_dict
+            complex_data.append(temp_dict)
+        return complex_data
 
 
 def main():

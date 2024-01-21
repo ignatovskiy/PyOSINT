@@ -19,31 +19,31 @@ class AlienVault(Web):
 
     def get_complex_data(self):
         categories = {"analysis": "facts", "passive_dns": "passive_dns", "geo": None}
-        data_dict = {}
+        complex_data = {}
 
         def process_category(category):
             parsed = self.get_parsed_object(self.get_search_url(self.input_data, category))
 
             if category == "analysis":
-                facts_data = {key: value for key, value in parsed.get(categories[category], {}).items() if value}
-                analysis_data = self.flatten_card_data(facts_data)
+                analysis_data = {key: value for key, value in parsed.get(categories[category], {}).items() if value}
+                analysis_data = self.flatten_card_data(analysis_data)
                 if analysis_data:
-                    data_dict["analysis"] = analysis_data
+                    complex_data["analysis"] = analysis_data
             elif category == "passive_dns":
-                facts_list = [
+                passive_dns_data = [
                     {el: fact[el] for el in fact if
                      el in ["address", "first", "last", "hostname", "record_type", "flag_title", "asn"]}
                     for fact in parsed.get(categories[category], [])
                 ]
-                if facts_list:
-                    data_dict["passive_dns"] = facts_list
+                if passive_dns_data:
+                    complex_data["passive_dns"] = passive_dns_data
             else:
                 geo_data = {key: value for key, value in parsed.items() if value}
                 if geo_data:
-                    data_dict["geo"] = geo_data
+                    complex_data["geo"] = geo_data
 
         self.process_requests_concurrently(process_category, reqs=categories)
-        return data_dict
+        return complex_data
 
 
 def main():

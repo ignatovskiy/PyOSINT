@@ -21,8 +21,8 @@ class MMNT(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         a_links = self.get_all_elements_from_parent(parsed, 'a', {"target": "_blank"})
-        links = [a_link.get('href') for a_link in a_links]
-        return links
+        complex_data = [a_link.get('href') for a_link in a_links]
+        return complex_data
 
 
 def main():

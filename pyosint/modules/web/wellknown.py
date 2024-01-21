@@ -19,7 +19,7 @@ class WellKnown(Web):
         return f"{URL}/?q={input_data}&page={page}"
 
     def get_complex_data(self):
-        data_list = []
+        complex_data = []
 
         def process_iteration(index):
             parsed = self.get_parsed_object(self.get_search_url(self.input_data, index))
@@ -29,13 +29,13 @@ class WellKnown(Web):
             table_data = self.parse_table(trs, headers=ths, first_row_index=1)
             if isinstance(table_data, dict):
                 table_data = [table_data]
-            data_list.extend(table_data)
+            complex_data.extend(table_data)
             disabled_next_page = self.get_all_elements_from_parent(parsed, "a", {"class": "disabled"})
             if disabled_next_page and "Next" in self.parse_strings_list(disabled_next_page):
                 return True
 
         self.process_requests_concurrently(process_iteration, while_mode=True)
-        return data_list
+        return complex_data
 
 
 def main():

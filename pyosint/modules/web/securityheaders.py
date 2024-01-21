@@ -45,8 +45,8 @@ class SecurityHeaders(Web):
         return dict(zip(headers, new_rows))
 
     def get_complex_data(self):
-        whois = self.get_whois()
-        return whois
+        complex_data = self.get_whois()
+        return complex_data
 
 
 def main():

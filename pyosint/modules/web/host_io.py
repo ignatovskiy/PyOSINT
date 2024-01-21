@@ -22,7 +22,7 @@ class HostIo(Web):
         categories = {"backlinks": "Backlinks sites", "redirects": "Redirects to sites",
                       "ip": "Sites on same IP", "asn": "Sites on same ASN"}
         span_class = "bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 rounded-lg tracking-normal font-mono text-sm"
-        data_dict = {}
+        complex_data = {}
 
         def process_category(category):
             temp_input_data = self.input_data
@@ -40,10 +40,10 @@ class HostIo(Web):
                                                     'li',
                                                     {"class": "sm:w-1/3 w-1/2 border-b border-r px-6 py-4"})
             lis_text = self.parse_strings_list(lis)
-            data_dict.update({categories[category]: lis_text})
+            complex_data.update({categories[category]: lis_text})
 
         self.process_requests_concurrently(process_category, reqs=categories)
-        return data_dict
+        return complex_data
 
 
 def main():

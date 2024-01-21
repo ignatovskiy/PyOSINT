@@ -19,8 +19,8 @@ class MacVendorLookup(Web):
         return f"{URL}/oui.php?mac={input_data}"
 
     def get_complex_data(self):
-        parsed = self.get_parsed_object(self.get_search_url(self.input_data))[0]
-        return parsed
+        complex_data = self.get_parsed_object(self.get_search_url(self.input_data))[0]
+        return complex_data
 
 
 def main():

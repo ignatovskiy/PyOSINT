@@ -19,8 +19,8 @@ class Sucuri(Web):
         return f"{URL}/api/v3/?scan={input_data}"
 
     def get_complex_data(self):
-        parsed = self.get_parsed_object(self.get_search_url(self.input_data))
-        return self.flatten_card_data(parsed)
+        complex_data = self.get_parsed_object(self.get_search_url(self.input_data))
+        return self.flatten_card_data(complex_data)
 
 
 def main():

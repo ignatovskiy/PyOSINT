@@ -27,8 +27,8 @@ class RapidDns(Web):
         tbody = self.get_all_elements_from_parent(table, 'tbody')[0]
         trs = self.get_all_elements_from_parent(tbody, 'tr')
         ths = self.get_all_elements_from_parent(thead, 'th')[1:]
-        parsed_table = self.parse_table(trs, headers=ths, first_row_index=1)
-        return parsed_table
+        complex_data = self.parse_table(trs, headers=ths, first_row_index=1)
+        return complex_data
 
 
 def main():

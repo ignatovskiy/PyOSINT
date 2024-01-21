@@ -35,8 +35,8 @@ class Elmasy(Web):
                 subdomains.append({h2_text: parsed_table})
             else:
                 subdomains.append({h2_text: ''})
-        parsed_dict = {"Subdomains": h2_text_list, "Detailed": subdomains}
-        return parsed_dict
+        complex_data = {"Subdomains": h2_text_list, "Detailed": subdomains}
+        return complex_data
 
 
 def main():

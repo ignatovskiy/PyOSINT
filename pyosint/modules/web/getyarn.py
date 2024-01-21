@@ -21,7 +21,7 @@ class GetYarn(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         divs = self.get_all_elements_from_parent(parsed, 'div', {"class": "card tight bg-w"})
-        clips = {}
+        complex_data = {}
         for div in divs:
             div_title = self.get_all_elements_from_parent(div,
                                                           'div',
@@ -30,11 +30,11 @@ class GetYarn(Web):
             pre_link = self.get_all_elements_from_parent(div, "a", {"class": "p"})[0].get('href')
             pre_link = pre_link.replace("/yarn-clip/", "")
             link = f"https://y.yarn.co/{pre_link}.mp4"
-            if not clips.get(div_title_text):
-                clips[div_title_text] = [link]
+            if not complex_data.get(div_title_text):
+                complex_data[div_title_text] = [link]
             else:
-                clips[div_title_text].append(link)
-        return clips
+                complex_data[div_title_text].append(link)
+        return complex_data
 
 
 def main():
