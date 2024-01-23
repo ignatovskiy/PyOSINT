@@ -23,7 +23,7 @@ class Screenshot(Web):
         return f"{URL}/screenshot/fastshot"
 
     def get_complex_data(self):
-        parsed = self.get_parsed_object(self.get_search_url())
+        complex_data = self.get_parsed_object(self.get_search_url())
         return {"Screenshot": ''}
 
 

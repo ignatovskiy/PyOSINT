@@ -19,8 +19,8 @@ class SimilarSites(Web):
         return f"{URL}/api/site/{input_data}"
 
     def get_complex_data(self):
-        parsed = self.get_parsed_object(self.get_search_url(self.input_data))
-        return parsed
+        complex_data = self.get_parsed_object(self.get_search_url(self.input_data))
+        return complex_data
 
 
 def main():

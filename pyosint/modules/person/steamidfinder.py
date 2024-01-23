@@ -26,10 +26,10 @@ class SteamIdFinder(Person):
             table = self.get_all_elements_from_parent(parsed, 'table', {'id': 'profile-info'})[0]
             trs = self.get_all_elements_from_parent(table, 'tr')
             ths = self.get_all_elements_from_parent(table, 'th')
-            table_dict = self.parse_table(trs, headers=ths)
+            complex_data = self.parse_table(trs, headers=ths)
         except IndexError:
             return {}
-        return table_dict
+        return complex_data
 
 
 def main():

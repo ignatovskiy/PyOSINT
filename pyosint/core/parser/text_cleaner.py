@@ -16,6 +16,7 @@ def strip_text(temp_list):
          for item in sublist] if isinstance(sublist, list) else sublist
         for sublist in temp_list if sublist
     ]
+
     return flatten_card_data(temp_stripped_list)
 
 
@@ -38,5 +39,5 @@ def get_element_text(element) -> list | str:
     return strip_text(result_list)
 
 
-def parse_strings_list(find_all_headers_element):
-    return flatten_card_data(get_element_text(find_all_headers_element), pass_empty=True)
+def parse_strings_list(find_all_headers_element, pass_empty=True):
+    return flatten_card_data(get_element_text(find_all_headers_element), pass_empty=pass_empty)

@@ -20,7 +20,7 @@ class ViewDns(Web):
 
     def get_complex_data(self):
         sections = ["iphistory", "ismysitedown"]
-        parsed_dict = {}
+        complex_data = {}
 
         def process_section(section):
             parsed = self.get_parsed_object(self.get_search_url(section, self.input_data))
@@ -32,10 +32,10 @@ class ViewDns(Web):
                 trs = self.get_all_elements_from_parent(table, 'tr')[1:]
                 parsed_rows = self.parse_table(trs, headers=headers, first_row_index=1)
                 parsed_data.extend(parsed_rows)
-            parsed_dict[section] = parsed_data
+            complex_data[section] = parsed_data
 
         self.process_requests_concurrently(process_section, reqs=sections)
-        return parsed_dict
+        return complex_data
 
 
 def main():

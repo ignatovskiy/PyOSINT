@@ -21,8 +21,8 @@ class MacLookup(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         div = self.get_all_elements_from_parent(parsed, 'div', {"class": "oui-group"})[0]
-        ps = self.parse_strings_list(self.get_all_elements_from_parent(div, 'p'))
-        return ps
+        complex_data = self.parse_strings_list(self.get_all_elements_from_parent(div, 'p'))
+        return complex_data
 
 
 def main():

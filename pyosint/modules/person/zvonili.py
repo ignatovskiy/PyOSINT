@@ -1,7 +1,6 @@
 from pyosint.core.categories.person import Person
 from pyosint.core.cmd import handle_cmd_args_module
 
-
 URL = "https://zvonili.com"
 
 
@@ -49,11 +48,12 @@ class Zvonili(Person):
                 number_comments = None
         except ValueError:
             number_rating, number_category, number_reviews, number_views, number_comments = None, None, None, None, None
-        return {"rating": number_rating,
-                "views": number_views,
-                "reviews": number_reviews,
-                "category": number_category,
-                "comments": number_comments}
+        complex_data = {"rating": number_rating,
+                        "views": number_views,
+                        "reviews": number_reviews,
+                        "category": number_category,
+                        "comments": number_comments}
+        return complex_data
 
 
 def main():

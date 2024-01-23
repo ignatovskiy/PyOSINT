@@ -28,20 +28,20 @@ class W3techs(Web):
                                                attributes={
                                                    'class': [re.compile(r'\bsi_h\b'), re.compile(r'\bsi_tech\b')]})
         ps_text = [el for el in ps if el.a.text]
-        techs_dict = {}
+        complex_data = {}
         temp_key = None
         for text in ps_text:
             if text.attrs['class'][0] == 'si_h':
                 temp_key = text.a.text
-                techs_dict[temp_key] = []
+                complex_data[temp_key] = []
             if text.attrs['class'][0] == 'si_tech':
-                techs_dict[temp_key].append(text.a.text)
-        for key in techs_dict:
-            if len(techs_dict[key]) == 1:
-                techs_dict[key] = techs_dict[key][0]
-        if techs_dict.get('No title declaration'):
-            techs_dict.pop('No title declaration')
-        return techs_dict
+                complex_data[temp_key].append(text.a.text)
+        for key in complex_data:
+            if len(complex_data[key]) == 1:
+                complex_data[key] = complex_data[key][0]
+        if complex_data.get('No title declaration'):
+            complex_data.pop('No title declaration')
+        return complex_data
 
 
 def main():

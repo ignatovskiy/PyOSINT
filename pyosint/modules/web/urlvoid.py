@@ -35,9 +35,9 @@ class UrlVoid(Web):
         parsed = self.get_parsed_object(self.get_search_url('scan', self.input_data))
         table = self.get_all_elements_from_parent(parsed,'table')[0]
         trs = self.get_all_elements_from_parent(table, 'tr')
-        parsed_table = self.parse_table(trs)
+        complex_data = self.parse_table(trs)
 
-        return clean_table(parsed_table)
+        return clean_table(complex_data)
 
 
 def main():

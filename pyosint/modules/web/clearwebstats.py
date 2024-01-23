@@ -1,7 +1,6 @@
 from pyosint.core.categories.web import Web
 from pyosint.core.cmd import handle_cmd_args_module
 
-
 URL = "https://www.clearwebstats.com"
 
 
@@ -21,22 +20,18 @@ class ClearWebStats(Web):
     def get_complex_data(self):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         tables = self.get_all_elements_from_parent(parsed, 'table')
-        parsed_data = {}
+        complex_data = {}
         indexes = [0, 1, 2, 3, 4, 5, 6, 9, 10]
 
         for index in indexes:
             temp_trs = self.get_all_elements_from_parent(tables[index], 'tr')
             temp_table = self.parse_table(temp_trs)
-
-            if isinstance(temp_table, dict):
-                parsed_data.update(temp_table)
-            elif isinstance(temp_table, list):
-                parsed_data.update({"Detailed": temp_table})
+            complex_data.update(temp_table)
 
         useless_values = ["Not Applicable", '']
-        parsed_data = {key: value for key, value in parsed_data.items() if
-                       isinstance(value, list) or value not in useless_values}
-        return parsed_data
+        complex_data = {key: value for key, value in complex_data.items() if
+                        isinstance(value, list) or value not in useless_values}
+        return complex_data
 
 
 def main():

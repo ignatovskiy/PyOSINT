@@ -42,7 +42,8 @@ class UserSearch(Person):
 
         urls = get_urls_list()
         self.process_requests_concurrently(process_iteration, urls)
-        return {"Found": list(ps)}
+        complex_data = {"Found": list(ps)}
+        return complex_data
 
 
 def main():
