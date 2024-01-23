@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup as bSoup
 
 
@@ -13,5 +15,11 @@ def get_all_elements_from_parent(parent_element, element: str, attributes: dict 
         return None
 
 
-def get_request_content(request_body):
-    return request_body.content
+def get_request_content(request_body, return_json=False):
+    if return_json:
+        try:
+            return request_body.json()
+        except json.decoder.JSONDecodeError:
+            return json.loads(request_body.text)
+    else:
+        return request_body.content

@@ -10,13 +10,9 @@ def remove_symbols(raw_element):
                   raw_element.translate(TRANSLATION_TABLE).strip())
 
 
-def remove_single_symbols(symbols_str):
-    return symbols_str if len(symbols_str) != 1 else None
-
-
 def strip_text(temp_list):
     temp_stripped_list = [
-        [remove_single_symbols(item) if isinstance(item, str) else [el for el in item if el]
+        [item if isinstance(item, str) else [el for el in item if el]
          for item in sublist] if isinstance(sublist, list) else sublist
         for sublist in temp_list if sublist
     ]
@@ -43,5 +39,5 @@ def get_element_text(element) -> list | str:
     return strip_text(result_list)
 
 
-def parse_strings_list(find_all_headers_element):
-    return flatten_card_data(get_element_text(find_all_headers_element), pass_empty=True)
+def parse_strings_list(find_all_headers_element, pass_empty=True):
+    return flatten_card_data(get_element_text(find_all_headers_element), pass_empty=pass_empty)
