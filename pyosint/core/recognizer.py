@@ -48,6 +48,9 @@ class Recognizer:
     def is_company_name(self) -> bool:
         return bool(re.search(regexps.COMPANY, self.input_data))
 
+    def is_filename(self) -> bool:
+        return bool(re.search(regexps.FILENAME, self.input_data))
+
     def is_id(self) -> bool:
         return bool(re.search(regexps.ID, self.input_data))
 
@@ -61,7 +64,8 @@ class Recognizer:
             "nickname": self.is_nickname(),
             "address": self.is_address(),
             "company": self.is_company_name(),
-            "id": self.is_id()
+            "id": self.is_id(),
+            "filename": self.is_filename()
         }
 
     def get_data_types_list(self) -> list:

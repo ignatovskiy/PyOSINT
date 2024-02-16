@@ -15,6 +15,7 @@ def main():
 
     parser.add_argument('-d', '--data', type=str, help=argparse.SUPPRESS)
     parser.add_argument('-c', '--category', type=str, help=argparse.SUPPRESS)
+    parser.add_argument('-t', '--type', type=str, help=argparse.SUPPRESS)
     parser.add_argument('-o', '--output', type=str, help=argparse.SUPPRESS)
     parser.add_argument('-f', '--file', type=str, help=argparse.SUPPRESS)
 
@@ -26,7 +27,7 @@ def main():
                 if args.output in SUPPORTED_FORMATS:
                     category = args.category if args.category else Recognizer(args.data).get_categories()[0]
                     log('info', f"Starting data parsing")
-                    data = Wrapper(args.data, category).handle_parsers()
+                    data = Wrapper(args.data, category, args.type).handle_parsers()
                     log('good', 'Data was parsed.')
                     log('info', f"Starting data writing to {args.file} ({args.output} format)")
                     write_data(args.file, data, args.output)

@@ -25,7 +25,10 @@ def init_row_collection(collection_type):
 def handle_row_collection(rows_collection, row_dict_element, collection_type):
     if row_dict_element:
         if collection_type == "dict":
-            rows_collection.update(row_dict_element)
+            if not isinstance(row_dict_element, dict):
+                rows_collection.update({'': row_dict_element})
+            else:
+                rows_collection.update(row_dict_element)
         elif collection_type == "list":
             rows_collection.append(row_dict_element)
     return rows_collection
@@ -42,6 +45,8 @@ def get_cells_data(first_row_index: int, headers: list, tds: list, do_list: bool
     elif first_row_index == 0:
         if len(tds) == 2:
             temp_key = tds[0][0] if isinstance(tds[0], list) and len(tds[0]) == 1 else tds[0]
+            if isinstance(tds[0], list):
+                return tds
             return {temp_key: tds[1]}
         elif len(tds) > 2:
             temp_list = flatten_row(tds)

@@ -20,7 +20,8 @@ class Converter:
             "nickname": self.convert_nickname(),
             "address": self.convert_address(),
             "company": self.convert_company_name(),
-            "id": self.convert_id()
+            "id": self.convert_id(),
+            "filename": self.convert_filename()
         }
 
     def convert_email(self) -> str:
@@ -47,6 +48,9 @@ class Converter:
         return self.input_data
 
     def convert_company_name(self) -> str:
+        return self.input_data
+
+    def convert_filename(self) -> str:
         return self.input_data
 
     def convert_id(self) -> str:

@@ -11,9 +11,10 @@ from pyosint.core.logger import log
 
 
 class Wrapper:
-    def __init__(self, input_data: str, category: str = None):
+    def __init__(self, input_data: str, category: str = None, data_type: str = None):
         self.input_data: str = input_data
         self.category: str = category
+        self.data_type: str = data_type
 
     def get_categories(self) -> list:
         return [self.category] if self.category else Recognizer(self.input_data).get_categories()
@@ -62,8 +63,12 @@ class Wrapper:
 
             if temp_types_set.intersection(temp_class_types_set):
                 log("info", f"Starting {class_name} module parsing")
-                temp_data = temp_class.get_complex_data()
-                log("good", f"Successful {class_name} module parsing")
+                try:
+                    temp_data = temp_class.get_complex_data()
+                    log("good", f"Successful {class_name} module parsing")
+                except:
+                    temp_data = None
+                    log("bad", f"Error during {class_name} module parsing")
                 return class_name, temp_data
 
     def handle_parsers(self) -> dict:
@@ -75,6 +80,9 @@ class Wrapper:
             types = Recognizer(self.input_data).get_data_types_list()
             if len(types) == 1:
                 self.input_data: str = Converter(self.input_data, types[0]).get_converted_data()
+
+        if self.data_type:
+            types = [self.data_type]
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             partial_process_class = partial(self.process_class, input_data=self.input_data, types=types)
