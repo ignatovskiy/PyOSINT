@@ -19,7 +19,7 @@ class DNSDumpster(Web):
         return f"{URL}/?url={input_data}"
 
     def get_complex_data(self):
-        parsed = self.get_csrf_site_content(URL, {'targetip': self.input_data, 'user': 'free'})
+        parsed = self.get_csrf_site_content(URL, URL, {'targetip': self.input_data, 'user': 'free'})
         tables = self.get_all_elements_from_parent(parsed, 'table')
         complex_data = {}
         style = "color: #ddd; font-family: 'Courier New', Courier, monospace; text-align: left;"

@@ -9,20 +9,20 @@
     <header>
         <h1>PyOSINT</h1>
         <nav>
-            <a href="/">Поиск</a> | <a href="/agreement">Пользовательское Соглашение</a>
+            <a href="/">Search</a> | <a href="/agreement">User Agreement</a>
         </nav>
     </header>
     <main>
         <div class="search-box">
             <form action="/" method="post">
-                <input type="text" name="query" placeholder="Введите данные..." value="{{ query }}">
+                <input type="text" name="query" placeholder="Data..." value="{{ query }}">
                 <select name="option" id="option-select">
-                    <option value="" disabled selected>Выберите опцию</option>
+                    <option value="" disabled selected>Choose option</option>
                     {% for option in options_list %}
                     <option value="{{ option }}">{{ option }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit">Искать</button>
+                <button type="submit">Search</button>
             </form>
         </div>
 
@@ -39,15 +39,13 @@
               {% endfor %}
             </div>
           {% elif value is iterable and value is not string %}
-            <ul style="margin-left: {{ margin }}px;">
               {% for item in value %}
                 {% if item is mapping %}
-                  <li>{{ render_value(item, margin + 5) }}</li>
+                  {{ render_value(item, margin + 5) }}<hr>
                 {% else %}
-                  <li>{{ item }}</li>
+                  {{ render_value(item, margin) }}
                 {% endif %}
               {% endfor %}
-            </ul>
           {% else %}
             <div>{{ value }}</div>
           {% endif %}
@@ -67,7 +65,7 @@
         {% endif %}
     </main>
     <footer>
-        <!-- Футер с контактами и ссылкой на GitHub -->
+        Nikita Ignatovskiy | 2024
     </footer>
 </body>
 </html>

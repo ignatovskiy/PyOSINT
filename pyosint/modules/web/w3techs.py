@@ -27,7 +27,7 @@ class W3techs(Web):
         ps = self.get_all_elements_from_parent(table, 'p',
                                                attributes={
                                                    'class': [re.compile(r'\bsi_h\b'), re.compile(r'\bsi_tech\b')]})
-        ps_text = [el for el in ps if el.a.text]
+        ps_text = [el for el in ps if el.a and el.a.text]
         complex_data = {}
         temp_key = None
         for text in ps_text:
