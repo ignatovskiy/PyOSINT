@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PyOSINT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>PyOSINT</h1>
+        <nav>
+            <a href="/">Поиск</a> | <a href="/agreement">Пользовательское Соглашение</a>
+        </nav>
+    </header>
+    <main>
+        <div class="search-box">
+            <form action="/" method="post">
+                <input type="text" name="query" placeholder="Введите данные..." value="{{ query }}">
+                <select name="option" id="option-select">
+                    <option value="" disabled selected>Выберите опцию</option>
+                    {% for option in options_list %}
+                    <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Искать</button>
+            </form>
+        </div>
+
+        {% macro render_value(value, margin=0) %}
+          {% if value is mapping %}
+            <div style="margin-left: {{ margin }}px;">
+              {% for key, val in value.items() %}
+                {% if val is mapping or val is iterable and val is not string %}
+                  <div><strong>{{ key }}:</strong></div>
+                  <div style="margin-left: {{ margin + 20 }}px;">{{ render_value(val, margin + 5) }}</div>
+                {% else %}
+                  <div><strong>{{ key }}:</strong> {{ val }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% elif value is iterable and value is not string %}
+            <ul style="margin-left: {{ margin }}px;">
+              {% for item in value %}
+                {% if item is mapping %}
+                  <li>{{ render_value(item, margin + 5) }}</li>
+                {% else %}
+                  <li>{{ item }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div>{{ value }}</div>
+          {% endif %}
+        {% endmacro %}
+
+        {% if search_results %}
+          <div class="search-results">
+            {% for key, value in search_results.items() %}
+              <div class="card">
+                <h3>{{ key }}</h3>
+                <div class="card-content">
+                  {{ render_value(value) }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+    </main>
+    <footer>
+        <!-- Футер с контактами и ссылкой на GitHub -->
+    </footer>
+</body>
+</html>

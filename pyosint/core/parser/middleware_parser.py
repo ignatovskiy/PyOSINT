@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as bSoup
 
 
 def get_soup_from_raw(content) -> bSoup:
-    return bSoup(content, features="html.parser")
+    return bSoup(content, features='lxml', parser='lxml')
 
 
 def get_all_elements_from_parent(parent_element, element: str, attributes: dict = None,

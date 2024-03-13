@@ -19,7 +19,7 @@ def write_data(output_file: str, data: dict, mode: str) -> None:
         generate_pdf_report(data=data, output_filename=output_file)
     elif mode == "json":
         with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
 
 class FastCanvas(canvas.Canvas):
