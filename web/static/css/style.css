@@ -6,13 +6,17 @@ body, html {
     color: #333;
 }
 
+main {
+    padding: 20px;
+}
+
 header {
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 10px 40px;
 }
 
 nav a {
@@ -56,18 +60,14 @@ nav a:hover::after {
 }
 
 .site-title h1 {
-    margin: 0;
     font-size: 24px;
 }
 
 .search-box {
+    padding: 20px;
+    width: 50%;
     display: flex;
     justify-content: center;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 20px 0;
 }
 
 .search-box form {
@@ -106,6 +106,7 @@ nav a:hover::after {
 
 .search-box form select {
     height: 40px;
+    width: 60px;
     border-right: none;
     border-left: none;
     border: none;
@@ -113,13 +114,16 @@ nav a:hover::after {
 }
 
 .search-results {
-    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
     padding: 20px;
+    display: grid;
 }
 
 .card {
+    contain: layout style paint;
+    display: flex;
+    flex-direction: column;
     background-color: #ffffff;
     border: none;
     border-radius: 10px;
@@ -135,8 +139,22 @@ nav a:hover::after {
 .card h3 {
     background-color: #007bff;
     color: white;
+    cursor: pointer;
     margin: 0;
     padding: 15px;
+    text-align: center;
+}
+
+.card h3:focus {
+  outline: none;
+}
+
+.card:target {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 
 .card p {
@@ -145,18 +163,29 @@ nav a:hover::after {
     line-height: 1.6;
 }
 
+.card-title h3::before {
+    content: '+ ';
+}
+
+.toggle:checked + label + .card-content {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.toggle:checked + label h3::before {
+    content: '- ';
+}
+
+.toggle {
+    display: none;
+}
+
 .card-content {
-    padding: 15px;
     overflow-wrap: break-word;
-}
-
-.card-content ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.card-content li {
-    margin: 5px 0;
+    padding: 0px 15px;
+    transition: all 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
 }
 
 .card-content strong {
@@ -164,17 +193,16 @@ nav a:hover::after {
 }
 
 .card-content ul {
-    padding-left: 0;
+    list-style-type: none;
+    padding: 0;
     list-style: none;
     margin: 0;
+    padding-left: 5px;
 }
 
 .card-content li {
-    margin: 0;
+    margin: 5px 0;
     padding: 2px 0;
-}
-
-.card-content li ul {
     padding-left: 5px;
 }
 
@@ -182,7 +210,6 @@ footer {
     background-color: #fff;
     text-align: center;
     padding: 10px;
-    position: fixed;
     bottom: 0;
     width: 100%;
     box-shadow: 0 -2px 4px rgba(0,0,0,0.1);

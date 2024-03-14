@@ -8,31 +8,33 @@
 <body>
     <header>
         <h1>PyOSINT</h1>
-        <nav>
-            <a href="/">Search</a> | <a href="/agreement">User Agreement</a>
-        </nav>
-    </header>
-    <main>
+
         <div class="search-box">
             <form action="/" method="post">
                 <input type="text" name="query" placeholder="Data..." value="{{ query }}">
                 <select name="option" id="option-select">
-                    <option value="" disabled selected>Choose option</option>
+                    <option value="" disabled selected>🏷️</option>
                     {% for option in options_list %}
                     <option value="{{ option }}">{{ option }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit">Search</button>
+                <button type="submit">🔍</button>
             </form>
         </div>
 
+        <nav>
+            <a href="/">Search</a> | <a href="/agreement">Agreement</a>
+        </nav>
+    </header>
+
+    <main>
         {% macro render_value(value, margin=0) %}
           {% if value is mapping %}
             <div style="margin-left: {{ margin }}px;">
               {% for key, val in value.items() %}
                 {% if val is mapping or val is iterable and val is not string %}
                   <div><strong>{{ key }}:</strong></div>
-                  <div style="margin-left: {{ margin + 20 }}px;">{{ render_value(val, margin + 5) }}</div>
+                  <div style="margin-left: {{ margin + 3 }}px;">{{ render_value(val, margin + 3) }}</div>
                 {% else %}
                   <div><strong>{{ key }}:</strong> {{ val }}</div>
                 {% endif %}
@@ -41,7 +43,7 @@
           {% elif value is iterable and value is not string %}
               {% for item in value %}
                 {% if item is mapping %}
-                  {{ render_value(item, margin + 5) }}<hr>
+                  <hr> {{ render_value(item, margin + 3) }}
                 {% else %}
                   {{ render_value(item, margin) }}
                 {% endif %}
@@ -55,7 +57,8 @@
           <div class="search-results">
             {% for key, value in search_results.items() %}
               <div class="card">
-                <h3>{{ key }}</h3>
+                  <input type="checkbox" id="card-{{ loop.index }}" class="toggle" />
+                  <label for="card-{{ loop.index }}" class="card-title"><h3>{{ key }}</h3></label>
                 <div class="card-content">
                   {{ render_value(value) }}
                 </div>
@@ -64,8 +67,5 @@
           </div>
         {% endif %}
     </main>
-    <footer>
-        Nikita Ignatovskiy | 2024
-    </footer>
 </body>
 </html>
