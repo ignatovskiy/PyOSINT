@@ -93,11 +93,10 @@ class Wrapper:
             for future in concurrent.futures.as_completed(futures):
                 try:
                     class_name, temp_data = future.result()
-                    if class_name is not None:
+                    if class_name is not None and temp_data:
                         data[class_name] = temp_data
                 except TypeError:
                     pass
-
         return data
 
 

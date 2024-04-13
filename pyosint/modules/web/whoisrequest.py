@@ -22,7 +22,7 @@ class WhoisRequest(Web):
         parsed = self.get_parsed_object(self.get_search_url(self.input_data))
         pre = self.get_all_elements_from_parent(parsed, 'pre')[0]
         pre_text = self.parse_strings_list(pre)
-        text = [el.split('\r') for el in pre_text]
+        text = [el.split(' ') for el in pre_text]
         complex_data = [sublist
                         for list_ in self.flatten_card_data(text)
                         for sublist in list_
@@ -31,7 +31,7 @@ class WhoisRequest(Web):
 
 
 def main():
-    handle_cmd_args_module(WhoisRequest)
+    handle_cmd_args_module(WhoisRequest)  # TODO fix
 
 
 if __name__ == "__main__":

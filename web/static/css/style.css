@@ -1,0 +1,216 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+main {
+    padding: 20px;
+}
+
+header {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+}
+
+nav a {
+    padding: 10px;
+    color: #007bff;
+    text-decoration: none;
+    text-align: right;
+    position: relative;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+nav a:hover::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #007bff;
+    animation: underline 0.3s forwards;
+}
+
+@keyframes underline {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@media (max-width: 300px) {
+    nav {
+        display: none;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+}
+
+.site-title h1 {
+    font-size: 24px;
+}
+
+.search-box {
+    padding: 20px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.search-box form {
+    width: 100%;
+    display: flex;
+    max-width: 1200px;
+}
+
+.search-box input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    outline: none;
+}
+
+.search-box input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.search-box button[type="submit"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    transition: background-color 0.2s;
+}
+
+.search-box button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.search-box form select {
+    height: 40px;
+    width: 60px;
+    border-right: none;
+    border-left: none;
+    border: none;
+    border-radius: 0 0 0 0;
+}
+
+.search-results {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    display: grid;
+}
+
+.card {
+    contain: layout style paint;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    margin: 0;
+    padding: 15px;
+    text-align: center;
+}
+
+.card h3:focus {
+  outline: none;
+}
+
+.card:target {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.card p {
+    padding: 15px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.card-title h3::before {
+    content: '+ ';
+}
+
+.toggle:checked + label + .card-content {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.toggle:checked + label h3::before {
+    content: '- ';
+}
+
+.toggle {
+    display: none;
+}
+
+.card-content {
+    overflow-wrap: break-word;
+    padding: 0px 15px;
+    transition: all 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.card-content strong {
+    font-weight: bold;
+}
+
+.card-content ul {
+    list-style-type: none;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+    padding-left: 5px;
+}
+
+.card-content li {
+    margin: 5px 0;
+    padding: 2px 0;
+    padding-left: 5px;
+}
+
+footer {
+    background-color: #fff;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}

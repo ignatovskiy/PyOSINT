@@ -5,7 +5,7 @@ URL = "https://www.geodatatool.com"
 
 
 class GeoDataTool(Web):
-    types = ["ip", "hostname"]
+    types = ["ip"]
 
     def __init__(self, input_data, data_type=None):
         self.input_data = input_data
