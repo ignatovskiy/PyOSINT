@@ -6,7 +6,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='pyosint',
-    version='1.0.0',
+    version='2.0.0',
     description='PyOSINT',
     url='https://github.com/ignatovskiy/PyOSINT',
     author='Nikita Ignatovsky',
