@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 <head>
     <meta charset="UTF-8">
-    <title>PyOSINT</title>
+    <title>{{ texts['search']['title'] }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -11,7 +11,7 @@
 
         <div class="search-box">
             <form action="/" method="post">
-                <input type="text" name="query" placeholder="Data..." value="{{ query }}">
+                <input type="text" name="query" placeholder="{{ texts['search']['input'] }}" value="{{ query }}">
                 <select name="option" id="option-select">
                     <option value="" disabled selected>🏷️</option>
                     {% for option in options_list %}
@@ -23,7 +23,7 @@
         </div>
 
         <nav>
-            <a href="/">Search</a> | <a href="/agreement">Agreement</a>
+            <a href="/agreement">{{ texts['search']['agreement'] }}</a> | <a href="/switch_lang/en">🇺🇸</a><a href="/switch_lang/ru">🇷🇺</a>
         </nav>
     </header>
 

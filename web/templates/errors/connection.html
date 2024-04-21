@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+    <title>Error: 500</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>PyOSINT</h1>
+    </header>
+    <main class="error-container">
+        <div class="error-message">
+            {{ texts['errors']['api_connection'] }}
+        </div>
+    </main>
+</body>
+</html>

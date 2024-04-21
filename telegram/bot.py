@@ -50,7 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     API_IP = "127.0.0.1"
-    API_PORT = "9200"
+    API_PORT = "9000"
     TOKEN_PATH = "token.json"
 
     API_IP = args.api_ip if args and args.api_ip else API_IP

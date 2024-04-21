@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+      <h1>PyOSINT</h1>
+      <nav>
+          <a href="/">{{ texts['search']['search'] }}</a> | <a href="/agreement">{{ texts['search']['agreement'] }}</a> | <a href="/switch_lang/en">🇺🇸</a><a href="/switch_lang/ru">🇷🇺</a>
+      </nav>
+  </header>
+  <main class="error-container">
+      <div class="error-message">
+          <h1>{{ error.name }}</h1>
+          <h2>{{ error.code }}</h2>
+          <p>{{ error.description }}</p>
+      </div>
+  </main>
+</body>
+</html>

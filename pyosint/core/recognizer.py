@@ -7,9 +7,10 @@ import pyosint.core.constants.categories as categories
 
 
 def exclude_types(types_list: list) -> list:
-    for type_ in types_list:
-        if type_ in exclusions.EXCLUDE_TYPES:
-            return [type_]
+    for priority_type in exclusions.EXCLUDE_TYPES:
+        for type_ in types_list:
+            if type_ == priority_type:
+                return [type_]
     return types_list
 
 

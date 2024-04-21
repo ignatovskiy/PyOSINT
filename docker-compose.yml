@@ -1,0 +1,34 @@
+
+version: '3.8'
+x-common-settings: &common-settings
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/app
+
+services:
+  flask_app:
+    <<: *common-settings
+    command: >
+      python3 web/app.py --ip ${HOST_IP} --port ${WEB_PORT} --api_ip fastapi_app --api_port ${API_PORT} --translations_dir "${TRANSLATIONS_DIR}"
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    depends_on:
+      - fastapi_app
+
+  tg_app:
+    <<: *common-settings
+    command: >
+      python3 telegram/bot.py --api_ip fastapi_app --api_port ${API_PORT} --token_path "${TOKEN_PATH}"
+
+  fastapi_app:
+    <<: *common-settings
+    command: >
+      uvicorn web.api:app --host ${HOST_IP} --port ${API_PORT} --workers 4
+    ports:
+      - "${API_PORT}:${API_PORT}"
+
+networks:
+  default:
+    driver: bridge
