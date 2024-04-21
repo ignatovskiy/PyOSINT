@@ -7,7 +7,7 @@ body, html {
 }
 
 main {
-    padding: 20px;
+    padding: 20px 40px;
 }
 
 header {
@@ -213,4 +213,20 @@ footer {
     bottom: 0;
     width: 100%;
     box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 120px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.error-message {
+    font-size: 24px;
+    text-align: center;
+    color: #333;
+    width: 100%;
 }

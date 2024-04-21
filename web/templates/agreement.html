@@ -1,53 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ get_locale() }}">
 <head>
     <meta charset="UTF-8">
-    <title>User Agreement</title>
+    <title>{{ texts['agreement']['title'] }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
         <h1>PyOSINT</h1>
         <nav>
-            <a href="/">Search</a> | <a href="/agreement">Agreement</a>
+            <a href="/">{{ texts['agreement']['search'] }}</a> | <a href="/switch_lang/en">🇺🇸</a><a href="/switch_lang/ru">🇷🇺</a>
         </nav>
     </header>
-    <main>
-        <h2>Introduction</h2>
-
-        Welcome to PyOSINT ("us", "we", or "our"). Our services include the collection and analysis of data from publicly available web resources.
-
-        <h2>Acceptance of Terms</h2>
-
-        By accessing and using our services, you accept and agree to be bound by these Terms of Service. If you disagree with any part of the terms, please do not use our service.
-
-        <h2>User Responsibilities</h2>
-
-        You are responsible for your use of the service, including the legality of any actions taken and data collected through the service.
-
-        <h2>Service Usage</h2>
-
-        Our service is provided for lawful purposes only, and the use of the service for illegal or unauthorized purposes is strictly prohibited.
-
-        <h2>Data Collection</h2>
-
-        We collect data from publicly available sources and do not claim ownership of the underlying data.
-
-        <h2>Liability</h2>
-
-        We are not liable for any damages or losses resulting from your use of the service. You agree to indemnify and hold harmless PyOSINT from any claims resulting from your use of the service.
-
-        <h2>Changes to Terms</h2>
-
-        We reserve the right to modify or replace these Terms of Service at any time.
-
-        <h2>Governing Law</h2>
-
-        These Terms of Service are governed by Applicable Law.
-
-        <h2>Contact Us</h2>
-
-        If you have any questions about these Terms of Service, please contact us at pyosint.com.
-    </main>
+    <main> {{ texts['agreement']['text']|safe }} </main>
 </body>
 </html>
