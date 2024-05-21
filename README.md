@@ -171,6 +171,7 @@ python script.py <input_data> [--data_type <data_type>] [--hidden] [--json [<jso
 ```
 
 Arguments:
+
 input_data (str): Input data for parsing.
 --data_type (str, optional): Specifies the input data type. Default is None.
 --hidden (flag, optional): Hides the result print if set.
