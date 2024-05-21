@@ -22,17 +22,17 @@ pip install -e .
 
 Parsing data to JSON:
 ```bash
-python3 pyosint -d [INPUT DATA] -o json -f [OUTPUT FILE]
+python3 pyosint -d <input_data> -o json -f <output_file>
 ```
 
 Parsing data to PDF:
 ```bash
-python3 pyosint -d [INPUT DATA] -o pdf -f [OUTPUT FILE]
+python3 pyosint -d <input_data> -o pdf -f <output_file>
 ```
 
 Parsing data with defined category:
 ```bash
-python3 pyosint -d [INPUT DATA] -o [OUTPUT TYPE] -f [OUTPUT FILE] -c [CATEGORY]
+python3 pyosint -d <input_data> -o <output_type> -f <output_file> -c <category>
 ```
 
 Example (try it):
@@ -98,7 +98,7 @@ Open your Telegram Bot and write input data
 
 pyosint_demo_bot
 
-# SH scripts (Linux&macOS)
+## SH scripts (Linux&macOS)
 
 ### Run Web interface
 
@@ -121,7 +121,7 @@ Paste your values to run_tg.sh script
 You can easily add your own module by there steps:
 
 1. Create .py file with name of your module
-2. Move this file to pyosint/modules/%CATEGORY%/ where %CATEGORY% is category of parsed data from your module (company/web/person/file)
+2. Move this file to pyosint/modules/<CATEGORY>/ where <CATEGORY> is category of parsed data from your module (company/web/person/file)
 3. Copy mandatory structure which corresponding to your module category from templates/%category%.py
 
 **Example for web category:**
@@ -161,6 +161,21 @@ if __name__ == "__main__":
 4. Add URL of service to URL constant, unique module name to class name and as handle_cmd_args_module argument, parsing/handling logic to functions
 5. That's it!
 
+# Run module directly for testing
+
+You can run each module directly
+
+```bash
+cd <SCRIPT_FOLDER>
+python script.py <input_data> [--data_type <data_type>] [--hidden] [--json [<json_file>]] [--dir <output_dir>]
+```
+
+Arguments:
+input_data (str): Input data for parsing.
+--data_type (str, optional): Specifies the input data type. Default is None.
+--hidden (flag, optional): Hides the result print if set.
+--json (str, optional): Saves the result to a JSON file. If no file name is provided, a default name will be used.
+--dir (str, optional): Specifies the output directory for saving files. Default is the current directory (.).
 
 # Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
