@@ -6,19 +6,17 @@ universal OSINT-tool written in Python language
 ![](https://img.shields.io/github/license/ignatovskiy/PyOSINT)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
+# Usage
 
-# Installation
+## Console
+
+### Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install PyOsint.
 
 ```bash
 pip install -e .
 ```
-
-
-# Usage
-
-## Console
 
 Parsing data to JSON:
 ```bash
@@ -100,14 +98,17 @@ pyosint_demo_bot
 
 Paste your values to run_web.sh script
 
+```bash
 ./run_web.sh
+```
 
 ### Run Telegram bot interface
 
 Paste your values to run_tg.sh script
 
+```bash
 ./run_tg.sh
-
+```
 
 # Adding modules
 
