@@ -172,11 +172,11 @@ python script.py <input_data> [--data_type <data_type>] [--hidden] [--json [<jso
 
 Arguments:
 
-input_data (str): Input data for parsing.
---data_type (str, optional): Specifies the input data type. Default is None.
---hidden (flag, optional): Hides the result print if set.
---json (str, optional): Saves the result to a JSON file. If no file name is provided, a default name will be used.
---dir (str, optional): Specifies the output directory for saving files. Default is the current directory (.).
+- input_data (str): Input data for parsing.
+- --data_type (str, optional): Specifies the input data type. Default is None.
+- --hidden (flag, optional): Hides the result print if set.
+- --json (str, optional): Saves the result to a JSON file. If no file name is provided, a default name will be used.
+- --dir (str, optional): Specifies the output directory for saving files. Default is the current directory (.).
 
 # Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
