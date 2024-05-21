@@ -18,6 +18,8 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install PyOsint
 pip install -e .
 ```
 
+### Running
+
 Parsing data to JSON:
 ```bash
 python3 pyosint -d [INPUT DATA] -o json -f [OUTPUT FILE]
@@ -54,10 +56,12 @@ docker compose up fastapi_app -d
 **Description:** Sends a search query along with a selected category to the search endpoint.
 
 **Request Body:**
+
 - `search` (string, required): The search query.
 - `category` (string, required): The category to search within (web, person, company, file).
 
 **Example:**
+
 POST http://0.0.0.0:9000/search/
 Content-Type: application/json
 
@@ -76,6 +80,7 @@ docker compose up flask_app -d
 Open http://<HOST_IP>:<WEB_PORT> in browser
 
 **Example:**
+
 http://0.0.0.0:8080
 
 
@@ -90,6 +95,7 @@ docker compose up tg_app -d
 Open your Telegram Bot and write input data
 
 **Example:**
+
 pyosint_demo_bot
 
 # SH scripts (Linux&macOS)
