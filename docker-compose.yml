@@ -21,6 +21,8 @@ services:
     <<: *common-settings
     command: >
       python3 telegram/bot.py --api_ip fastapi_app --api_port ${API_PORT} --token_path "${TOKEN_PATH}"
+    depends_on:
+      - fastapi_app
 
   fastapi_app:
     <<: *common-settings
