@@ -70,7 +70,7 @@ class Recognizer:
         }
 
     def get_data_types_list(self) -> list:
-        return exclude_types([key for key, value in self.get_data_types_dict().items() if value])
+        return [key for key, value in self.get_data_types_dict().items() if value]
 
     def get_categories(self) -> list:
         categories_list: list = list()
